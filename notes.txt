@@ -1,0 +1,27 @@
+
+==> char *readline(char *prompt) :
+
+	same as get_next_line but it reads from stdin only also i writes the prompt in stdout
+	before reading. (you must compile with -lreadline to use it).
+
+==> void add_history(str);
+
+	adds the given string to the history of your program so that when you give the user a prompt
+	to write somthing he can go back to the messages he already wrote during the program using the 
+	up/down arrow , (only the strings that has been added using the functoin, also the history is cleared 
+	after the end of the program).
+
+==> void rl_clear_history(void)
+
+	cleares the history you stored using the add_history functoin .
+
+==> void rl_on_new_line(void)
+
+	cancels the current prompt even if you are already writing then it gives you a new one 
+	(you will use it when reseving a terminating signal)
+
+==> void rl_redisplay(void)
+
+	makes the last line writen by your code visible in the therminal it is usfell all alot of
+	cases here is an example:
+	
