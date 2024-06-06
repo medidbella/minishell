@@ -1,30 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Created: 2023/11/06 17:40:26 by midbella          #+#    #+#             */
+/*   Updated: 2023/11/21 19:52:58 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <signal.h>
-# include "libft/libft.h"
+void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	char		*de;
+	const char	*sr;
+	size_t		i;
 
-void	free_strings(char **strs);
-char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
-
-#endif
+	i = 0;
+	de = (char *)dst;
+	sr = (const char *)src;
+	if (!dst && !src)
+		return (dst);
+	if (dst < src)
+	{
+		while (i < len)
+		{
+			de[i] = sr[i];
+			i++;
+		}
+	}
+	else if (dst > src)
+	{
+		while (len--)
+			de[len] = sr[len];
+	}
+	return (dst);
+}

@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Created: 2023/11/05 15:16:20 by midbella          #+#    #+#             */
+/*   Updated: 2023/11/24 20:52:24 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <signal.h>
-# include "libft/libft.h"
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	unsigned char	*ptr1;
+	unsigned char	*ptr2;
+	size_t			i;
 
-void	free_strings(char **strs);
-char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
-
-#endif
+	if (n == 0)
+		return (0);
+	i = 0;
+	ptr1 = (unsigned char *) s1;
+	ptr2 = (unsigned char *) s2;
+	while (ptr1[i] == ptr2[i] && i < n - 1)
+		i++;
+	return (ptr1[i] - ptr2[i]);
+}

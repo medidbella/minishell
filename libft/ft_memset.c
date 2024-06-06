@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Created: 2023/11/03 18:34:03 by midbella          #+#    #+#             */
+/*   Updated: 2023/11/24 17:53:19 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <signal.h>
-# include "libft/libft.h"
+void	*ft_memset(void *b, int c, size_t len)
+{
+	size_t			i;
+	unsigned char	*ptr;
 
-void	free_strings(char **strs);
-char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
-
-#endif
+	i = 0;
+	ptr = b;
+	while (len > 0)
+	{
+		ptr[i] = (unsigned char) c;
+		i++;
+		len--;
+	}
+	return (b);
+}

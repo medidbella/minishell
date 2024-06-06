@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Created: 2024/06/06 17:54:14 by midbella          #+#    #+#             */
+/*   Updated: 2024/06/06 19:55:24 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "minishell.h"
 
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <signal.h>
-# include "libft/libft.h"
-
-void	free_strings(char **strs);
-char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
-
-#endif
+int	ft_redirect(char *cmd, char **argv, char *to_file)
+{
+	int	pipe_fds[2];
+	int fd;
+	int return_val;
+	
+	fd = open(to_file, O_CREAT | O_WRONLY, 0666);
+	ft_excute(cmd, argv, 0, fd);
+	return (return_val);
+}
+int main(int ac, char **av)
+{
+	char *str = av[ac - 1];
+	av[ac - 1] = NULL;
+	ft_redirect(av[1], av+1, str);
+}

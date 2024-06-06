@@ -1,30 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Created: 2023/11/13 14:27:01 by midbella          #+#    #+#             */
+/*   Updated: 2023/11/25 17:40:31 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <unistd.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <stdlib.h>
-# include <signal.h>
-# include "libft/libft.h"
+void	ft_putnbr_fd(int n, int fd)
+{
+	long	nb;
+	char	s[10];
+	int		j;
 
-void	free_strings(char **strs);
-char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
-
-#endif
+	if (fd < 0)
+		return ;
+	nb = n;
+	if (nb < 0)
+	{
+		write(fd, "-", 1);
+			nb = nb * -1;
+	}
+	j = 0;
+	while (nb >= 10)
+	{
+		s[j] = (nb % 10) + 48;
+		nb = nb / 10;
+		j++;
+	}
+	s[j] = nb + 48;
+	while (j >= 0)
+	{
+		write(fd, &s[j], 1);
+		j--;
+	}
+}
