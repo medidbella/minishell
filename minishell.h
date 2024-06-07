@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 18:56:13 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/06 21:00:30 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@
 void	free_strings(char **strs);
 char	*find_path(char *find_me);
 int		ft_excute(char *cmd, char **args, int r_fd, int w_fd);
+int		redirect_input(char *cmd, char **argv, char *to_file, int mode);
 
 #endif

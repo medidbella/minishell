@@ -6,25 +6,33 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:14 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 19:55:24 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/06 21:57:27 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_redirect(char *cmd, char **argv, char *to_file)
+int	redirect_input(char *cmd, char **argv, char *to_file, int mode)
 {
-	int	pipe_fds[2];
 	int fd;
 	int return_val;
-	
-	fd = open(to_file, O_CREAT | O_WRONLY, 0666);
-	ft_excute(cmd, argv, 0, fd);
+	if (mode == 0)
+		fd = open(to_file, O_CREAT | O_RDWR | O_TRUNC, 0666);
+	else
+		fd = open(to_file, O_CREAT | O_RDWR | O_APPEND, 0666);
+	return_val = ft_excute(cmd, argv, 0, fd);
 	return (return_val);
 }
-int main(int ac, char **av)
+
+int redirect_countent(char *cmd, char **argv, char *in_file)
 {
-	char *str = av[ac - 1];
-	av[ac - 1] = NULL;
-	ft_redirect(av[1], av+1, str);
+	int fd;
+	int return_val;
+	fd = open(in_file, O_RDONLY, 0444);
+	return_val = ft_excute(cmd, argv, fd, 1);
+}
+
+int main()
+{
+	
 }
