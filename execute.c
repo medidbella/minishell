@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 19:10:40 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/06 20:28:01 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ int ft_excute(char *cmd, char **args, int r_fd, int w_fd)
     id = fork();
     if (id == 0)
     {
-        dup2(0, r_fd);
-        dup2(1, w_fd);
+        dup2(r_fd, 0);
+        dup2(w_fd, 1);
         execve(cmd, args, NULL);
     }
     else 
