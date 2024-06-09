@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:14 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 21:57:27 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/08 14:49:36 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ int redirect_countent(char *cmd, char **argv, char *in_file)
 	int return_val;
 	fd = open(in_file, O_RDONLY, 0444);
 	return_val = ft_excute(cmd, argv, fd, 1);
+	return (return_val);
 }
-
-int main()
-{
-	
-}
+//you have to emplement "<<" later

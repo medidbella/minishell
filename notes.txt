@@ -19,4 +19,3 @@
 
 	cancels the current prompt even if you are already writing then it gives you a new one 
 	(you will use it when reseving a terminating signal)
-

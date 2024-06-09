@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/06 20:28:01 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/09 21:36:32 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,22 @@ char	*find_path(char *find_me)
 	return (free_strings(paths), res);
 }
 
-int ft_excute(char *cmd, char **args, int r_fd, int w_fd)
+int ft_excute(char *cmd, char **args, int fd[2])
 {
-    int id;
-    int return_val;
-	
+	char	*temp;
+    int		id;
+    int		return_val;
+
+	temp = cmd;
 	cmd = ft_strjoin("/", cmd);
     cmd = find_path(cmd);
+	if (cmd == NULL)
+		cmd = temp;
     id = fork();
     if (id == 0)
     {
-        dup2(r_fd, 0);
-        dup2(w_fd, 1);
+        dup2(fd[0], 0);
+        dup2(fd[1], 1);
         execve(cmd, args, NULL);
     }
     else 
