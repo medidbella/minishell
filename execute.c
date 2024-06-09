@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/09 21:36:32 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/09 21:54:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void	free_strings(char **strs)
 	i = 0;
 	while (strs[i])
 	{
-		free(strs[i]);
+		//free(strs[i]);
 		i++;
 	}
-	free(strs);
+	//free(strs);
 }
 
 char	*find_path(char *find_me)
@@ -44,11 +44,11 @@ char	*find_path(char *find_me)
 		if (paths[i] == NULL)
 			return (free(find_me), free(res), free_strings(paths), NULL);
 	}
-    free(find_me);
+    //free(find_me);
 	return (free_strings(paths), res);
 }
 
-int ft_excute(char *cmd, char **args, int fd[2])
+int ft_excute(char *cmd, char **args, int fds[2], char state)
 {
 	char	*temp;
     int		id;
@@ -62,12 +62,20 @@ int ft_excute(char *cmd, char **args, int fd[2])
     id = fork();
     if (id == 0)
     {
-        dup2(fd[0], 0);
-        dup2(fd[1], 1);
+		if (state == 'r')
+		{
+			close(fds[1]);
+        	dup2(fds[0], 0);
+		}
+		else
+		{
+			close(fds[0]);
+        	dup2(fds[1], 1);
+		}
         execve(cmd, args, NULL);
     }
     else 
         wait(&return_val);
-    free(cmd);
+    //free(cmd);
     return (return_val);
 }

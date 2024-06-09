@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/09 21:37:35 by midbella         ###   ########.fr       */
+/*   Updated: 2024/06/09 21:45:57 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_input
 
 void	free_strings(char **strs);
 char	*find_path(char *find_me);
-int		ft_excute(char *cmd, char **args, int fd[2]);
+int		ft_excute(char *cmd, char **args, int fd[2], char state);
 int		redirect_input(char *cmd, char **argv, char *to_file, int mode);
 
 #endif
