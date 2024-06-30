@@ -19,10 +19,10 @@ void	free_strings(char **strs)
 	i = 0;
 	while (strs[i])
 	{
-		//free(strs[i]);
+		free(strs[i]);
 		i++;
 	}
-	//free(strs);
+	free(strs);
 }
 
 char	*find_path(char *find_me)
@@ -42,40 +42,74 @@ char	*find_path(char *find_me)
 			break ;
 		i++;
 		if (paths[i] == NULL)
-			return (free(find_me), free(res), free_strings(paths), NULL);
+			return (free_strings(paths), find_me);
 	}
-    //free(find_me);
 	return (free_strings(paths), res);
 }
 
-int ft_excute(char *cmd, char **args, int fds[2], char state)
+void close_fds(int **fds, int used_fd, int used_fd2, int size)
+{
+	static int nb;
+	int j;
+
+	j = 0;
+	printf(" = = = = = = = = call nb %d\n = = = = = = = = ", nb);
+	nb++;
+	while (j < size)
+	{	
+			if (fds[j][1] != used_fd2 && fds[j][1] != used_fd)
+			{
+				printf("closing =>%d", fds[j][1]);
+				close(fds[j][1]);
+			}
+			if (fds[j][0] != used_fd2 && fds[j][0] != used_fd)
+			{
+				printf("closing =>%d", fds[j][0]);
+				close(fds[j][0]);
+			}
+		j++;
+	}
+	printf("the end\n");
+}
+
+
+int	ft_excute(t_input	*tab, int read_fd, int write_fd, int **pipes)
 {
 	char	*temp;
     int		id;
-    int		return_val;
 
-	temp = cmd;
-	cmd = ft_strjoin("/", cmd);
-    cmd = find_path(cmd);
-	if (cmd == NULL)
-		cmd = temp;
+    tab->cmd = find_path(tab->cmd);
     id = fork();
     if (id == 0)
     {
-		if (state == 'r')
+		if (read_fd != -1 && write_fd == -1)
 		{
-			close(fds[1]);
-        	dup2(fds[0], 0);
+			close(pipes[0][1]);
+			close(pipes[0][0]);
+			close(pipes[1][1]);
+			dup2(read_fd, 0);
+			close(pipes[1][0]);
 		}
-		else
+		else if (write_fd != -1 && read_fd != -1)
 		{
-			close(fds[0]);
-        	dup2(fds[1], 1);
+			close(pipes[0][1]);
+			close(pipes[1][0]);
+			dup2(write_fd, 1);
+			dup2(read_fd, 0);
+			close(pipes[0][0]);
+			close(pipes[1][1]);
 		}
-        execve(cmd, args, NULL);
-    }
-    else 
-        wait(&return_val);
-    //free(cmd);
-    return (return_val);
+		else if (write_fd != -1 && read_fd == -1)
+		{
+			close(pipes[0][0]);
+			close(pipes[1][0]);
+			close(pipes[1][1]);
+			dup2(write_fd, 1);
+			close(pipes[0][1]);
+		}
+		execve(tab->cmd, tab->cmd_av, NULL);
+	}
+    return (id);
 }
+
+

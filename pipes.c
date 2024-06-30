@@ -12,16 +12,49 @@
 
 #include "minishell.h"
 
-int	ft_pipe(t_input	*tab)
+int	**pipes_creator(int number)
 {
-	int return_val;
-	int fds[2];//[0]read [1]write
+	int	i;
+	int	**result;
 
-	pipe(fds);
-	ft_excute(tab[0].cmd, tab[0].cmd_av, fds, 'w');
-	return_val = ft_excute(tab[1].cmd, tab[1].cmd_av, fds, 'r');
-	close(fds[0]);
-	close(fds[1]);
+	i = 0;
+	result = malloc(sizeof(int *) * (number - 1));
+	while (i < number - 1)
+	{
+		result[i] = malloc(sizeof(int) * 2);
+		pipe(result[i]);
+		i++;
+	}
+	return (result);
+}
+
+int	ft_pipe(t_input	*tab, int size)
+{
+	int index;
+	int	*pids;
+	int return_val;
+	int **pipes;
+
+	pipes = pipes_creator(size);
+	pids = malloc(sizeof(int) * size);
+	pids[0] = ft_excute(&tab[0], -1, pipes[0][1], pipes);
+	pids[1] = ft_excute(&tab[1], pipes[0][0], pipes[1][1], pipes);
+	pids[2] = ft_excute(&tab[2], pipes[1][0], -1, pipes);
+	index = 0;
+	while (index < size)
+	{
+		waitpid(pids[index], &return_val, 0);
+		index++;
+	}
+	close(pipes[0][0]);
+	close(pipes[0][1]);
+	close(pipes[1][0]);
+	close(pipes[1][1]);
+	index = 0;
+	while (index >= 0)
+		free(pipes[index++]);
+	free(pipes);
+	free(pids);
 	return (return_val);
 }
 
@@ -29,36 +62,15 @@ int main()
 {
 	t_input *tab;
 
-	tab = malloc(sizeof(t_input) * 2);
-	tab[0].cmd = "/bin/cat";
-	tab[1].cmd = "/bin/wc";
-	tab[0].cmd_av = ft_split("cat notes.txt", ' ');
-	tab[1].cmd_av = ft_split("wc -l", ' ');
-
-	ft_pipe(tab);
-	// int		fds[2];
-	
-	// pipe(fds);
-	// int id = fork();
-
-	// if (id == 0)
-	// {
-	// 	close(fds[0]);
-	// 	dup2(fds[1], 1);
-	// 	execve(tab[0].cmd, tab[0].cmd_av, NULL);
-	// }
-	// int id2 = fork();
-	// if (id2 == 0)
-	// {
-	// 	close(fds[1]);
-	// 	dup2(fds[0], 0);
-	// 	execve(tab[1].cmd, tab[1].cmd_av, NULL);
-	// }
-	// close(fds[0]);
-	// close(fds[1]);
-	// waitpid(id, NULL, 0);
-	// waitpid(id2, NULL, 0);
+	tab = malloc(sizeof(t_input) * 3);
+	tab[0].cmd = "/cat";
+	tab[1].cmd = "/grep";
+	tab[2].cmd = "/wc";
+	tab[0].cmd_av = ft_split("cat -e -n notes.txt", ' ');
+	tab[1].cmd_av = ft_split("grep d", ' ');
+	tab[2].cmd_av = ft_split("wc -c", ' ');
+	ft_pipe(tab, 3);
 	free_strings(tab[0].cmd_av);
 	free_strings(tab[1].cmd_av);
+	free_strings(tab[2].cmd_av);
 }
-

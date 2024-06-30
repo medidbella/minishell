@@ -12,24 +12,45 @@
 
 #include "minishell.h"
 
-int	redirect_input(char *cmd, char **argv, char *to_file, int mode)
+int	redirect_input(t_input *input, char *to_file, int mode)// >> || >
 {
 	int fd;
+	int id;
 	int return_val;
-	if (mode == 0)
-		fd = open(to_file, O_CREAT | O_RDWR | O_TRUNC, 0666);
-	else
-		fd = open(to_file, O_CREAT | O_RDWR | O_APPEND, 0666);
-	return_val = ft_excute(cmd, argv, 0, fd);
+
+	fd = open(to_file, O_CREAT | O_RDWR | mode, 0666);
+	input->cmd = find_path(input->cmd);
+	id = fork();
+	if (id == 0)
+	{
+		dup2(fd, 1);
+		close(fd);
+		execve(input->cmd, input->cmd_av, NULL);
+	}
+	else 
+		wait(&return_val);
+	close(fd);
 	return (return_val);
 }
 
-int redirect_countent(char *cmd, char **argv, char *in_file)
+int redirect_countent(t_input *input, char *in_file) // <
 {
 	int fd;
+	int id;
 	int return_val;
-	fd = open(in_file, O_RDONLY, 0444);
-	return_val = ft_excute(cmd, argv, fd, 1);
+
+	fd = open(in_file, O_CREAT | O_RDONLY, 0666);
+	input->cmd = find_path(input->cmd);
+	id = fork();
+	if (id == 0)
+	{
+		dup2(fd, 0);
+		close(fd);
+		execve(input->cmd, input->cmd_av, NULL);
+	}
+	else 
+		wait(&return_val);
+	close(fd);
 	return (return_val);
 }
 //you have to emplement "<<" later
