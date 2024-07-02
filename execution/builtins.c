@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/30 16:21:45 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:12:54 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int ft_echo(t_input *data)
     int flag;
     int index;
     
-    index = 0;
+    index = 1;
     flag = 0;
     while (data->cmd_av[index])
     {
-        if (is_optoin(data->cmd_av[0]) && flag == 0)
+        if (is_optoin(data->cmd_av[1]) && flag == 0)
         {
             flag = 1;
             while (is_optoin(data->cmd_av[index]))
@@ -49,29 +49,26 @@ int ft_echo(t_input *data)
 } 
 
 int ft_cd(t_input *data)//the parser should handle the case of an absolute path && '-' && cd only
-{
-    char *path;
-    char buff[PATH_MAX];
-    
-    if (data->cmd_av[1])
+{   
+    if (data->cmd_av[2])
         return (print_error(ft_strdup("cd: too many arguments")), 1);
-    if (chdir(data->cmd_av[0]) != 0)
+    if (chdir(data->cmd_av[1]) != 0)
             return (print_error(ft_strjoin("cd: no such file or directory: ", data->cmd_av[0])), 1);
     return (0);
 }
 
 int ft_pwd(t_input *data)
 {
-    if (data->cmd_av)
+    char *path;
+
+    if (data->cmd_av[1])
         return (print_error(ft_strdup("pwd: too many arguments")), 1);
-    else 
-        printf("%s\n", getenv("PWD"));
+    else
+    {
+        path = getcwd(NULL, PATH_MAX);
+        printf("%s\n", path);
+        free(path);
+    }
     return (0);
 }
-int main()
-{
-    t_input mem;
-    char *st[] = {"arg", NULL};
-    mem.cmd_av = NULL;
-    
 }

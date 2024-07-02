@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/30 15:49:47 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:29:22 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,20 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <limits.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 
-typedef struct s_input
+typedef struct s_input//this is the struct that will hold the commands that are seprated by pipes
 {
-	char	*cmd;
-	char	**cmd_av;
+	char			*cmd;
+	char			**cmd_av;
+	struct input	*next;
 } t_input;
+
+typedef struct s_list//this command will only hold my mini shell environment variables
+{
+	char			*line;
+	struct s_list	*next;
+}t_list;
 
 
 void	free_strings(char **strs);
