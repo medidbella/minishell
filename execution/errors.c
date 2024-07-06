@@ -6,19 +6,19 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 15:01:17 by midbella          #+#    #+#             */
-/*   Updated: 2024/06/30 15:51:02 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/06 14:44:27 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void    print_error(char *str)
+void	print_error(char *str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (str[i])
-        write(2, &str[i++], 1);
-    write(2, "\n", 1);
-    free(str);
+	i = 0;
+	while (str[i])
+		write(2, &str[i++], 1);
+	write(2, "\n", 1);
+	free(str);
 }

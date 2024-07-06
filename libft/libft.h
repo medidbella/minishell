@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:23:54 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/23 21:39:31 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/03 10:43:33 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 typedef struct s_list
 {
-	void			*content;
+	char			*content;
 	struct s_list	*next;
 }	t_list;
 int		ft_isalnum(int c);
