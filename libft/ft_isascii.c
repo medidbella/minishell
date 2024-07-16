@@ -6,11 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 18:12:59 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/24 20:51:44 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:48:20 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "libft.h"
 
 int	ft_isascii(int c)
 {

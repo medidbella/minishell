@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/06 14:40:38 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:04:01 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ void	modify_environ(t_list *env, char *new_val, int var_index)
 		return (free(tmp));
 	}
 	new_val += 2;
+	if (env->content[i] == 0)
+		new_val = ft_strjoin("+", new_val);
 	tmp = env->content;
 	env->content = ft_strjoin(tmp, new_val);
 	free(tmp);
@@ -120,16 +122,18 @@ void	export_judger(char *arg, t_list *env)
 
 int	ft_export(t_input *data, t_list *env)
 {
+	int	return_val;
 	int	i;
 
 	i = 1;
+	return_val = 0;
 	if (!data->cmd_av[1])
 		lexicographical_sort(env);
 	while (data->cmd_av[i])
 	{
-		error_detector(data->cmd_av[i]);
+		error_detector(data->cmd_av[i], &return_val);
 		export_judger(data->cmd_av[i], env);
 		i++;
 	}
-	return (1);
+	return (return_val);
 }

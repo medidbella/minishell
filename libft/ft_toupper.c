@@ -6,11 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 13:55:13 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/24 20:53:08 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:49:46 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "libft.h"
 
 int	ft_toupper(int c)
 {

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 21:01:53 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/26 23:10:31 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:50:16 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	end_index(const char *s, char c, int i)
 	{
 		if (s[i + 1] == c || s[i + 1] == '\0')
 			return (i);
-	i++;
+		i++;
 	}
 	return (i);
 }

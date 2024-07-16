@@ -6,17 +6,17 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 19:15:41 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/23 22:09:45 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:46:31 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char *ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t ls1;
-	size_t ls2;
-	char *res;
+	size_t	ls1;
+	size_t	ls2;
+	char	*res;
 
 	if (s1 == NULL && s2 == NULL)
 		return (NULL);

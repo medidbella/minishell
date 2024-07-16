@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalpha.c                                       :+:      :+:    :+:   */
+/*   error_functions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 13:09:59 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/15 17:48:33 by midbella         ###   ########.fr       */
+/*   Created: 2024/07/14 18:39:16 by midbella          #+#    #+#             */
+/*   Updated: 2024/07/15 19:14:27 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../minishell.h"
 
-int	ft_isalpha(int c)
+void	open_failer(char *err_msg, char *file)
 {
-	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+	write(2, err_msg, ft_strlen(err_msg));
+	write(2, ": ", 2);
+	write(2, file, ft_strlen(file));
+	write(2, "\n", 1);
+}
+
+void	print_error(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		write(2, &str[i++], 1);
+	write(2, "\n", 1);
+	free(str);
 }

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 14:27:01 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/25 17:40:31 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:51:07 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_putnbr_fd(int n, int fd)
 	if (nb < 0)
 	{
 		write(fd, "-", 1);
-			nb = nb * -1;
+		nb = nb * -1;
 	}
 	j = 0;
 	while (nb >= 10)

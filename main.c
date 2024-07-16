@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/30 15:01:17 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/06 14:44:27 by midbella         ###   ########.fr       */
+/*   Created: 2024/07/12 21:27:15 by midbella          #+#    #+#             */
+/*   Updated: 2024/07/16 19:06:13 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
-void	print_error(char *str)
+t_glob	*g_memory;
+
+int	main(int ac, char **av, char **envp)
 {
-	int	i;
+	t_glob	shared;
+	t_list	*environment;
+	t_input	*input;
+	char	*read_line;
 
-	i = 0;
-	while (str[i])
-		write(2, &str[i++], 1);
-	write(2, "\n", 1);
-	free(str);
+	environment = envron_dup(envp);
+	shared.env = environment;
+	g_memory = &shared;
+	while (1)
+	{
+		read_line = readline("MINISHELL : ");
+		if (!read_line)
+			return (1);
+		add_history(read_line);
+		input = ft_parsing(read_line);
+		global_exec(input);
+	}
 }

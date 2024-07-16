@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/06 14:40:49 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/08 12:54:41 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,55 @@ int	double_quotes(char *str)
 		return (1);
 }
 
-void	error_detector(char *av)
+void	printer(t_list *head)
+{
+	int	flag;
+	int	index;
+
+	while (head)
+	{
+		flag = 0;
+		index = 0;
+		printf("declare -x ");
+		while (head->content[index])
+		{
+			if (index && head->content[index] == '=' && flag == 0)
+			{
+				printf("=%c", '"');
+				flag = 1;
+			}
+			else
+				printf("%c", head->content[index]);
+			index++;
+		}
+		if (flag == 1)
+			printf("%c", '"');
+		printf("\n");
+		head = head->next;
+	}
+}
+
+void	error_detector(char *av, int *return_val)
 {
 	char	*tmp;
 
-	if (!ft_isalpha(av[0]) && av[0] != '"')
+	*return_val = 0;
+	while (av[*return_val] && av[*return_val] != '+')
+		*return_val += 1;
+	if (!ft_isalpha(av[0]) && av[0] != '"' || av[*return_val] == '+'
+		&& av[*return_val + 1] != '=')
 	{
 		tmp = ft_strjoin("minishell: export:`", av);
 		print_error(ft_strjoin(tmp, "':not a valid indentifier"));
 		av[0] = 0;
+		*return_val = 1;
 		return (free(tmp));
 	}
 	else if (!double_quotes(av))
+	{
+		*return_val = 1;
 		av[0] = 0;
+	}
 }
 
 int	var_finder(t_list *env, char *var)
@@ -63,9 +99,8 @@ int	var_finder(t_list *env, char *var)
 	return (-1);
 }
 
-t_list	*envron_dup(void)
+t_list	*envron_dup(char **environ)
 {
-	extern char	**environ;
 	int			index;
 	t_list		*head;
 	t_list		*iter;

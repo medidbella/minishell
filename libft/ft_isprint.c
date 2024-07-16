@@ -6,11 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 18:33:44 by midbella          #+#    #+#             */
-/*   Updated: 2023/11/24 20:51:52 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:48:00 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"libft.h"
+#include "libft.h"
 
 int	ft_isprint(int c)
 {
