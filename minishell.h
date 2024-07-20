@@ -6,13 +6,14 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/16 18:15:33 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/19 16:52:34 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define PATH_MAX 3000 // tmp to scilence error 
 # define RD_TRNC 1 // > 
 # define RD_APND 2 // >>
 # define HERE_DOC -22 // <<
@@ -34,12 +35,6 @@
 # include "parsing.h"
 # include "libft/libft.h"
 
-typedef struct s_glob
-{
-	t_list *env;
-	//...
-}	t_glob;
-
 typedef struct s_options
 {
 	char				*input;
@@ -57,4 +52,10 @@ typedef struct s_input
 	struct s_input	*next;
 }	t_input;
 
+typedef struct s_holder
+{
+	t_input *input;
+	t_list	*env;
+	int		**pipes;
+}	t_holder;
 #endif

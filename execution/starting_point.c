@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:39:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/16 19:01:42 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:39:10 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,32 +62,34 @@ int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 	return (0);
 }
 
-int	executer(t_input *cmd, int w_fd, int r_fd, int **pipes)
+int	executer(t_holder *mem, int w_fd, int r_fd)
 {
 	char	*bin_path;
 	int		return_val;
 	int		id;
 
+	if (mem->input->type == BUILTIN)
+		return (exec_builtin(mem, w_fd, r_fd));
+	bin_path = find_path(mem->input->cmd_av[0]);
 	id = fork();
 	if (id == -1)
 		return (1);
-	bin_path = find_path(cmd->cmd_av[0]);
 	if (id == 0)
 	{
-		close_unused_pipes(pipes, w_fd, r_fd);
+		close_unused_pipes(mem->pipes, w_fd, r_fd);
 		if (w_fd >= 0)
 			dup2(w_fd, 1);
 		if (r_fd >= 0)
 			dup2(r_fd, 0);
-		exit(builtins_or_external(cmd, bin_path));
+		execve(bin_path, mem->input->cmd_av, NULL);
+		print_error(ft_strjoin("command not found :", bin_path));
+		exit (127);
 	}
-	close (w_fd);
-	close (r_fd);
 	wait(&return_val);
-	return (free(bin_path), return_val);
+	return (close(w_fd), close(r_fd), return_val);
 }
 
-int	exec_manager(t_input *cmd_node, int pipe_wfd, int pipe_rfd, int **pipes)
+int	exec_manager(t_holder *mem, int pipe_wfd, int pipe_rfd)
 {
 	int			idx;
 	int			write_idx;
@@ -97,12 +99,12 @@ int	exec_manager(t_input *cmd_node, int pipe_wfd, int pipe_rfd, int **pipes)
 	write_idx = -1;
 	read_idx = -1;
 	her_doc_flag = -1;
-	if (!cmd_node->list)
-		return (executer(cmd_node, pipe_wfd, pipe_rfd, pipes));
-	set_read_write(cmd_node->list, &write_idx, &read_idx);
-	if (opt_iter(cmd_node->list, &write_idx, &read_idx))
+	if (!mem->input->list)
+		return (executer(mem, pipe_wfd, pipe_rfd));
+	set_read_write(mem->input->list, &write_idx, &read_idx);
+	if (opt_iter(mem->input->list, &write_idx, &read_idx))
 		return (1);
-	if (ft_sorter(cmd_node, &write_idx, &read_idx, &her_doc_flag) == 1)
+	if (ft_sorter(mem->input, &write_idx, &read_idx, &her_doc_flag) == 1)
 		return (1);
 	pipe_or_option(&write_idx, &read_idx, &pipe_wfd, &pipe_rfd);
 	if (her_doc_flag != -1)
@@ -110,35 +112,34 @@ int	exec_manager(t_input *cmd_node, int pipe_wfd, int pipe_rfd, int **pipes)
 		idx = -1;
 		read_idx *= -1;
 		while (++idx != her_doc_flag)
-			cmd_node->list = cmd_node->list->next;
-		return (here_doc(cmd_node->cmd_av, cmd_node->list->limiter, write_idx));
+			mem->input->list = mem->input->list->next;
+		return (here_doc(mem, mem->input->list->limiter, write_idx));
 	}
-	return (executer(cmd_node, write_idx, read_idx, pipes));
+	return (executer(mem, write_idx, read_idx));
 }
 
-int	global_exec(t_input *cmd_list)
+int	global_exec(t_holder *mem)
 {
 	int	pipe_index;
-	int	**pipes;
 	int	count;
 
-	count = inputs_count(cmd_list);
+	count = inputs_count(mem->input);
 	pipe_index = 1;
 	if (count == 0)
 		return (0);
 	if (count == 1)
-		return (exec_manager(cmd_list, -1, -1, NULL));
-	pipes = pipes_creator(count);
-	exec_manager(cmd_list, pipes[0][1], -1, pipes);
-	cmd_list = cmd_list->next;
-	while (cmd_list->next)
+		return (mem->pipes = NULL, exec_manager(mem, -1, -1));
+	mem->pipes = pipes_creator(count);
+	exec_manager(mem, mem->pipes[0][1], -1);
+	mem->input = mem->input->next;
+	while (mem->input->next)
 	{
-		exec_manager(cmd_list, pipes[pipe_index][1], pipes[pipe_index - 1][0],
-			pipes);
-		cmd_list = cmd_list->next;
+		exec_manager(mem, mem->pipes[pipe_index][1],
+				mem->pipes[pipe_index - 1][0]);
+		mem->input = mem->input->next;
 		pipe_index++;
 	}
-	exec_manager(cmd_list, -1, pipes[count - 2][0], pipes);
-	close_and_free_pipes(pipes);
+	exec_manager(mem, -1, mem->pipes[count - 2][0]);
+	close_and_free_pipes(mem->pipes);
 	return (0);
 }

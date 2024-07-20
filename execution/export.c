@@ -6,13 +6,13 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/07 17:04:01 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/19 15:37:17 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	lexicographical_sort(t_list *head)
+void	lexicographical_sort(t_list *head, int write_fd)
 {
 	int		flag;
 	int		iter;
@@ -37,7 +37,7 @@ void	lexicographical_sort(t_list *head)
 			flag = 0;
 		}
 	}
-	printer(head);
+	printer(head, write_fd);
 	lst_free(head);
 }
 
@@ -120,19 +120,21 @@ void	export_judger(char *arg, t_list *env)
 	return (free(var), free(value));
 }
 
-int	ft_export(t_input *data, t_list *env)
+int	ft_export(t_holder *mem, int write_fd)
 {
 	int	return_val;
 	int	i;
 
 	i = 1;
+	if (write_fd == -1)
+		write_fd = 1;
 	return_val = 0;
-	if (!data->cmd_av[1])
-		lexicographical_sort(env);
-	while (data->cmd_av[i])
+	if (!mem->input->cmd_av[1])
+		lexicographical_sort(mem->env, write_fd);
+	while (mem->input->cmd_av[i])
 	{
-		error_detector(data->cmd_av[i], &return_val);
-		export_judger(data->cmd_av[i], env);
+		error_detector(mem->input->cmd_av[i], &return_val);
+		export_judger(mem->input->cmd_av[i], mem->env);
 		i++;
 	}
 	return (return_val);

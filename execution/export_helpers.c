@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/08 12:54:41 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:57:30 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	double_quotes(char *str)
 		return (1);
 }
 
-void	printer(t_list *head)
+void	printer(t_list *head, int write_fd)
 {
 	int	flag;
 	int	index;
@@ -37,21 +37,22 @@ void	printer(t_list *head)
 	{
 		flag = 0;
 		index = 0;
-		printf("declare -x ");
+		ft_putstr_fd("declare -x ", write_fd);
 		while (head->content[index])
 		{
 			if (index && head->content[index] == '=' && flag == 0)
 			{
-				printf("=%c", '"');
+				ft_putchar_fd('=', write_fd);
+				ft_putchar_fd('"', write_fd);
 				flag = 1;
 			}
 			else
-				printf("%c", head->content[index]);
+				ft_putchar_fd(head->content[index], write_fd);
 			index++;
 		}
 		if (flag == 1)
-			printf("%c", '"');
-		printf("\n");
+			ft_putchar_fd('"', write_fd);
+		ft_putchar_fd('\n', write_fd);
 		head = head->next;
 	}
 }

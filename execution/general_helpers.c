@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 14:50:54 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/16 14:55:38 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/19 17:36:44 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,32 +44,6 @@ int	sort_helper(char *str1, char *str2)
 	return (0);
 }
 
-void	free_strings(char **strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs[i])
-	{
-		free(strs[i]);
-		i++;
-	}
-	free(strs);
-}
-
-void	lst_free(t_list *list)
-{
-	t_list	*tmp;
-
-	while (list)
-	{
-		tmp = list->next;
-		free(list->content);
-		free(list);
-		list = tmp;
-	}
-}
-
 void	swap_str(char **str1, char **str2, int *flag)
 {
 	char	*tmp;
@@ -78,4 +52,15 @@ void	swap_str(char **str1, char **str2, int *flag)
 	*str1 = *str2;
 	*str2 = tmp;
 	*flag = 1;
+}
+
+int	is_optoin(char *arg)
+{
+	int	index;
+
+	index = 0;
+	if (ft_strlen(arg) == 2 && arg[0] == '-' && arg[1] == 'n')
+		return (1);
+	else
+		return (0);
 }
