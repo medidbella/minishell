@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:39:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 18:39:10 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:07:55 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 
 	if (mem->input->type == BUILTIN)
 		return (exec_builtin(mem, w_fd, r_fd));
-	bin_path = find_path(mem->input->cmd_av[0]);
+	bin_path = find_path(mem->input->cmd_av[0], mem->env);
 	id = fork();
 	if (id == -1)
 		return (1);
@@ -81,7 +81,7 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 			dup2(w_fd, 1);
 		if (r_fd >= 0)
 			dup2(r_fd, 0);
-		execve(bin_path, mem->input->cmd_av, NULL);
+		execve(bin_path, mem->input->cmd_av, prep_env(mem->env));
 		print_error(ft_strjoin("command not found :", bin_path));
 		exit (127);
 	}
@@ -135,7 +135,7 @@ int	global_exec(t_holder *mem)
 	while (mem->input->next)
 	{
 		exec_manager(mem, mem->pipes[pipe_index][1],
-				mem->pipes[pipe_index - 1][0]);
+			mem->pipes[pipe_index - 1][0]);
 		mem->input = mem->input->next;
 		pipe_index++;
 	}

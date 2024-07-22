@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 17:53:14 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:10:44 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	echo_helper(char **av, int write_fd)
 	flag = 0;
 	while (av[index])
 	{
-		if (is_optoin(av[index]) && flag == 0 )
+		if (is_optoin(av[index]) && flag == 0)
 		{
 			flag = 1;
 			while (is_optoin(av[index]) && av[index])
@@ -78,7 +78,7 @@ int	ft_pwd(t_holder *mem, int write_fd)
 
 	if (write_fd == -1)
 		write_fd = 1;
-	if (!mem->pipes)	
+	if (!mem->pipes)
 		return (pwd_helper(write_fd), 0);
 	id = fork();
 	if (id == -1)
@@ -108,8 +108,7 @@ int	ft_cd(t_holder *mem)
 			if (mem->input->cmd_av[2])
 				return (print_error(ft_strdup("cd: too many arguments")), 1);
 			if (chdir(mem->input->cmd_av[1]) != 0)
-				return (print_error(ft_strjoin("cd: no such file or directory: ",
-					mem->input->cmd_av[0])), 1);
+				return (perror(NULL), 1);
 			exit(0);
 		}
 		wait(&r_val);
@@ -118,7 +117,7 @@ int	ft_cd(t_holder *mem)
 	if (mem->input->cmd_av[2])
 		return (print_error(ft_strdup("cd: too many arguments")), 1);
 	if (chdir(mem->input->cmd_av[1]) != 0)
-		return (print_error(ft_strjoin("cd: no such file or directory: ",
-					mem->input->cmd_av[0])), 1);
+		return (ft_putstr_fd("cd: ", 2),
+			ft_putstr_fd(mem->input->cmd_av[1], 2), perror(NULL), 1);
 	return (0);
 }

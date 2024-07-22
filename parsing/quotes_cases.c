@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes_cases.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 15:37:16 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/12 21:51:18 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	case_of_pipe_inside_quotes_1(char *read_line)
 		}
 	}
 }
-
 
 void	case_of_pipe_inside_quotes_2(char **splited)
 {
@@ -109,14 +108,13 @@ void	case_of_spaces_inside_double_quotes_2(char **cmd_av)
 	int	x;
 
 	i = -1;
-
 	while (cmd_av[++i])
 	{
-        x = -1;
-        while (cmd_av[i][++x])
-        {
-            if (cmd_av[i][x] == -1)
-                cmd_av[i][x] = ' ';
-        }
+		x = -1;
+		while (cmd_av[i][++x])
+		{
+			if (cmd_av[i][x] == -1)
+				cmd_av[i][x] = ' ';
+		}
 	}
 }

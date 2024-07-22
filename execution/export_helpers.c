@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/18 17:57:30 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/21 13:17:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,20 +100,3 @@ int	var_finder(t_list *env, char *var)
 	return (-1);
 }
 
-t_list	*envron_dup(char **environ)
-{
-	int			index;
-	t_list		*head;
-	t_list		*iter;
-
-	index = 1;
-	head = ft_lstnew(ft_strdup(environ[0]));
-	iter = head;
-	while (environ[index])
-	{
-		iter->next = ft_lstnew(ft_strdup(environ[index]));
-		index++;
-		iter = iter->next;
-	}
-	return (head);
-}

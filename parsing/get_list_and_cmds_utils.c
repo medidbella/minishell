@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_list_and_cmds_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 22:55:24 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/16 17:45:49 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,22 @@
 int	check_built_in(t_input	*input)
 {
 	int		len;
-	char	*build_in;
 	char	*cmd;
 
-	build_in = ft_strdup("built-in");
-	if (!build_in)
-		return (0);
 	if (input->cmd_av && input->cmd_av[0])
 	{
 		cmd = input->cmd_av[0];
 		len = ft_strlen(cmd);
-		if ((!ft_strncmp(cmd
-					, "echo", len)) || (!ft_strncmp(cmd, "pwd", len))
-			|| (!ft_strncmp(cmd , "export", len)) || (!ft_strncmp(cmd
-					, "unset", len)) || (!ft_strncmp(cmd, "exit", len))
-			|| (!ft_strncmp(cmd, "env", len)) || (!ft_strncmp(cmd, "cd"
-					, len)))
+		if (((!ft_strncmp(cmd, "echo", len) && len == 4)) || ((!ft_strncmp(cmd,
+						"pwd", len)) && len == 3) || ((!ft_strncmp(cmd,
+						"export", len)) && len == 6)
+			|| ((!ft_strncmp(cmd, "unset", len)) && len == 5)
+			|| ((!ft_strncmp(cmd, "exit", len)) && len == 4)
+			|| ((!ft_strncmp(cmd, "env", len)) && len == 3)
+			|| ((!ft_strncmp(cmd, "cd", len)) && len == 2))
 			input->type = BUILTIN;
+		else
+			input->type = EXTERNAL;
 	}
 	return (1);
 }

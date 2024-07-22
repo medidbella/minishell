@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 16:52:34 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/20 15:15:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,6 @@ typedef struct s_holder
 	t_input *input;
 	t_list	*env;
 	int		**pipes;
+	int		last_r_val;
 }	t_holder;
 #endif

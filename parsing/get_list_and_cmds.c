@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_list_and_cmds.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 11:02:39 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/16 17:49:14 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ int	get_input_and_output_file(t_input *input, char *splited, int who, int i)
 	x = 0;
 	if (splited[i] == ' ')
 		i++;
-	while (splited[i] && splited[i] != ' ' && splited[i] != '>' && splited[i] != '<')
+	while (splited[i] && splited[i] != ' ' && splited[i] != '>'
+		&& splited[i] != '<')
 	{
 		str[x++] = splited[i];
 		splited[i++] = ' ';
@@ -64,8 +65,7 @@ int	get_input_and_output_file(t_input *input, char *splited, int who, int i)
 	new_list = malloc(sizeof(t_options));
 	if (!new_list)
 		return (free(str), -1);
-	x = get_file_name_or_limiter(input, str, new_list, who);
-	if (!x)
+	if (!get_file_name_or_limiter(input, str, new_list, who))
 		return (free(str), free(new_list), 0);
 	return (lstadd_back(&input->list, new_list), free(str), i);
 }
@@ -124,7 +124,7 @@ int	output_redirection_and_append(t_input *input, char *splited, int i)
 	return (i);
 }
 
-void	*get_list_and_cmds(t_input *input, char *splited)
+void	*get_list_and_cmds(t_input *input, char *splited, t_list *env)
 {
 	int		i;
 	char	*str;
@@ -155,7 +155,7 @@ void	print_it(t_input *input)
 	int i = 1;
 	int x = 0;
 	int y = 0;
-	
+
 	while (input)
 	{
 		printf("\n***************************************\n");
@@ -166,9 +166,7 @@ void	print_it(t_input *input)
 			{
 				printf("cmd ==> [%s]", input->cmd_av[x]);
 				if (input->type == BUILTIN)
-					printf("       |< %s > |", "BUILTIN");
-				else if (input->type == EXTERNAL)
-					printf("       |< %s > |", "EXTERNAL");
+					printf("       |< BUILT-IN > |");
 				printf("\n");
 				x++;
 			}

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:41 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 17:37:00 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:07:40 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ typedef struct s_list		t_list;
 typedef struct s_holder		t_holder;
 
 void	free_strings(char **strs);
-char	*find_path(char *find_me);
+char	*find_path(char *find_me, t_list *env);
 void	close_and_free_pipes(int **fds);
 t_list	*envron_dup(char **environ);
 void	swap_str(char **str1, char **str2, int *flag);
@@ -43,18 +43,19 @@ int		var_finder(t_list *env, char *var);
 void	error_detector(char *av, int *return_val);
 int		inputs_count(t_input *inpt_list);
 int		global_exec(t_holder *mem);
+char	**prep_env(t_list *env);
 void	open_failer(char *err_msg, char *file);
 int		ft_sorter(t_input *cmd_node, int *write_idx,
 			int *read_idx, int *here_doc);
 void	set_read_write(t_options *list, int *last_w, int *last_r);
 void	case_of_error(t_options *tst_node, int *flag);
 void	set_read_write(t_options *list, int *last_w, int *last_r);
-void	case_of_error(t_options *tst_node, int *flag);
 int		get_input_output(t_options *iter, int *node_idx, int *her_doc);
+int		executer(t_holder *mem, int w_fd, int r_fd);
 int		**pipes_creator(int number);
 void	pipe_or_option(int *write_idx, int *read_idx,
 			int *pipe_wfd, int *pipe_rfd);
 void	close_unused_pipes(int **pipes, int w_fd, int r_fd);
-int		exec_builtin(t_holder *mem, int write_fd, int r_fd);
-
+int		exec_builtin(t_holder *mem, int write_fd, int read_fd);
+char	*ft_get_env(char *var, t_list *env);
 #endif

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:41:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/16 14:55:12 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:07:20 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	ft_sorter(t_input *cmd_node, int *write_idx, int *read_idx, int *here_doc)
 	return (0);
 }
 
-char	*find_path(char *find_me)
+char	*find_path(char *find_me, t_list *env)
 {
 	char	**paths;
 	char	*res;
@@ -100,7 +100,9 @@ char	*find_path(char *find_me)
 	i = 0;
 	holder = find_me;
 	find_me = ft_strjoin("/", find_me);
-	paths = ft_split(getenv("PATH"), ':');
+	paths = ft_split(ft_get_env("PATH", env), ':');
+	if (!paths)
+		return (NULL);
 	while (1)
 	{
 		res = ft_strjoin(paths[i], find_me);

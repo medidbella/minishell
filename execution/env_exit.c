@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_exit.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 17:57:59 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/22 10:47:35 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int	locate_char(char *str, char c)
 	return (0);
 }
 
-void	env_helper(t_list *env, int write_fd)
+int	env_helper(t_list *env, int write_fd)
 {
-	int i;
+	int	i;
 
 	while (env)
 	{
@@ -41,11 +41,13 @@ void	env_helper(t_list *env, int write_fd)
 		}
 		env = env->next;
 	}
+	return (0);
 }
 
 int	ft_env(t_holder *mem, int write_fd)
 {
 	int	id;
+	int	r_val;
 	int	i;
 
 	if (write_fd == -1)
@@ -58,20 +60,20 @@ int	ft_env(t_holder *mem, int write_fd)
 	if (id == 0)
 	{
 		close_unused_pipes(mem->pipes, write_fd, -1);
-		env_helper(mem->env, write_fd);
+		r_val = env_helper(mem->env, write_fd);
 		close(write_fd);
-		exit(0);
+		exit(r_val);
 	}
-	wait(NULL);
+	wait(&r_val);
 	close(write_fd);
-	return (0);
+	return (r_val);
 }
 
 void	ft_exit(t_holder *mem)
 {
 	if (!mem->pipes)
 	{
-		free_t_inputs(mem->input);
+		free_inputs(mem->input);
 		lst_free(mem->env);
 		exit(0);
 	}
