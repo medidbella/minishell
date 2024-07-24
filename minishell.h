@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/20 15:15:11 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:54:40 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # define PATH_MAX 3000 // tmp to scilence error 
 # define RD_TRNC 1 // > 
 # define RD_APND 2 // >>
-# define HERE_DOC -22 // <<
+# define HERE_DOC 3 // <<
 # define INPUT_RD 4 // <
 # define EXTERNAL 13
 # define BUILTIN 37
@@ -34,6 +34,7 @@
 # include "execution.h"
 # include "parsing.h"
 # include "libft/libft.h"
+
 
 typedef struct s_options
 {
@@ -54,9 +55,9 @@ typedef struct s_input
 
 typedef struct s_holder
 {
-	t_input *input;
-	t_list	*env;
-	int		**pipes;
-	int		last_r_val;
+	t_input 		*input;
+	t_list			*env;
+	int				**pipes;
+	unsigned char	last_r_val;
 }	t_holder;
 #endif

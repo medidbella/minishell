@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:14 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/20 14:34:25 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:28:14 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	check_and_send(char *new_line, char *delimiter, int *flag, int pipe_fd)
 {
 	int		i;
-	char	*res;
 
 	i = 0;
 	if (ft_strncmp(new_line, delimiter,
@@ -44,9 +43,9 @@ int	here_doc(t_holder *mem, char *delimiter, int write_fd)
 {
 	int		fds[2];
 	int		flag;
-	int		return_val;
-	char	*bin_path;
 
+	if (!mem->input)
+		return (here_doc_sim(delimiter), 0);
 	fds[0] = open("/tmp/latest_minishell_here_doc", O_CREAT | O_RDWR, 0644);
 	if (fds[0] == -1)
 		return (perror(NULL), 1);

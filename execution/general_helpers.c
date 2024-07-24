@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 14:50:54 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 12:52:52 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:49:44 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,3 +65,18 @@ int	is_optoin(char *arg)
 		return (0);
 }
 
+void	set_old_pwd(t_holder *mem, char *old_pwd)
+{
+	char	*tab[3];
+	char	**temp;
+
+	tab[0] = "export";
+	tab[1] = ft_strjoin("OLDPWD=", old_pwd);
+	tab[2] = NULL;
+	temp = mem->input->cmd_av;
+	mem->input->cmd_av = tab;
+	ft_export(mem, 1);
+	mem->input->cmd_av = temp;
+	free(tab[1]);
+	free(old_pwd);
+}

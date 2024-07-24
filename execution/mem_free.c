@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:21:23 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 17:31:01 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:33:10 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,11 @@ void	lst_free(t_list *list)
 		free(list);
 		list = tmp;
 	}
+}
+
+void	child_mem_free(t_holder *mem, char **child_env)
+{
+	free(child_env);
+	free_inputs(mem->input);
+	lst_free(mem->env);
 }

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 13:17:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:48:36 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void	error_detector(char *av, int *return_val)
 	*return_val = 0;
 	while (av[*return_val] && av[*return_val] != '+')
 		*return_val += 1;
-	if (!ft_isalpha(av[0]) && av[0] != '"' || av[*return_val] == '+'
-		&& av[*return_val + 1] != '=')
+	if ((!ft_isalpha(av[0]) && av[0] != '"') || (av[*return_val] == '+'
+			&& av[*return_val + 1] != '='))
 	{
 		tmp = ft_strjoin("minishell: export:`", av);
 		print_error(ft_strjoin(tmp, "':not a valid indentifier"));
@@ -99,4 +99,3 @@ int	var_finder(t_list *env, char *var)
 	}
 	return (-1);
 }
-

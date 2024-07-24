@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 10:09:41 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:26:24 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,16 @@ void	free_inputs(t_input *input)
 	t_options	*next;
 	t_input		*next_input;
 
-	i = 0;
 	x = 0;
+	i = 0;
 	while (input)
 	{
+		if (input->cmd_av[i])
+		{
+			i = 0;
+			while (input->cmd_av[i])
+				free(input->cmd_av[i++]);
+		}
 		while (input->cmd_av[i])
 			free(input->cmd_av[i++]);
 		while (input->list)

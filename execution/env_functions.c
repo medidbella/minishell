@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 12:50:38 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 15:07:06 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:24:22 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*ft_get_env(char *var, t_list *env)
 	while (++index != position)
 		env = env->next;
 	index = 0;
-	while (env->content[index++] != '=' && env->content[index])
+	while (env->content[index] != '=' && env->content[index])
 		index++;
 	return (&env->content[index + 1]);
 }

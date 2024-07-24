@@ -6,29 +6,37 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:39:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 15:07:55 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 21:38:06 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	opt_iter(t_options *opt_lst, int *write_idx, int *read_idx)
+int	opt_iter(t_input *input, int *write_idx, int *read_idx)
 {
 	int	err_flag;
 	int	index;
 
 	index = 0;
 	err_flag = 0;
-	while (opt_lst->next)
+	while (input->list->next)
 	{
-		if (opt_lst->who == HERE_DOC && index != *read_idx)
-			here_doc_sim(opt_lst->limiter);
+		if (input->list->who == HERE_DOC && index != *read_idx)
+			here_doc_sim(input->list->limiter);
 		else if (index != *read_idx && index != *write_idx)
-			case_of_error(opt_lst, &err_flag);
+			case_of_error(input->list, &err_flag);
+		if (!input->cmd_av || index != *read_idx || index != *write_idx)
+		{
+			case_of_error(input->list, &err_flag);
+			if (err_flag)
+				*write_idx = 1;
+			else
+				*write_idx = 2;
+		}
 		if (err_flag)
 			return (1);
 		index++;
-		opt_lst = opt_lst->next;
+		input->list = input->list->next;
 	}
 	return (0);
 }
@@ -36,7 +44,6 @@ int	opt_iter(t_options *opt_lst, int *write_idx, int *read_idx)
 int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 {
 	char	*file;
-	int		type;
 	char	*err;
 	int		index;
 
@@ -65,10 +72,11 @@ int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 int	executer(t_holder *mem, int w_fd, int r_fd)
 {
 	char	*bin_path;
+	char	**child_env;
 	int		return_val;
 	int		id;
 
-	if (mem->input->type == BUILTIN)
+	if (!mem->input->cmd_av || mem->input->type == BUILTIN)
 		return (exec_builtin(mem, w_fd, r_fd));
 	bin_path = find_path(mem->input->cmd_av[0], mem->env);
 	id = fork();
@@ -81,12 +89,13 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 			dup2(w_fd, 1);
 		if (r_fd >= 0)
 			dup2(r_fd, 0);
-		execve(bin_path, mem->input->cmd_av, prep_env(mem->env));
+		child_env = prep_env(mem->env);
+		execve(bin_path, mem->input->cmd_av, child_env);
 		print_error(ft_strjoin("command not found :", bin_path));
+		child_mem_free(mem, child_env);
 		exit (127);
 	}
-	wait(&return_val);
-	return (close(w_fd), close(r_fd), return_val);
+	return (wait(&return_val), close(w_fd), close(r_fd), return_val);
 }
 
 int	exec_manager(t_holder *mem, int pipe_wfd, int pipe_rfd)
@@ -102,8 +111,8 @@ int	exec_manager(t_holder *mem, int pipe_wfd, int pipe_rfd)
 	if (!mem->input->list)
 		return (executer(mem, pipe_wfd, pipe_rfd));
 	set_read_write(mem->input->list, &write_idx, &read_idx);
-	if (opt_iter(mem->input->list, &write_idx, &read_idx))
-		return (1);
+	if (opt_iter(mem->input, &write_idx, &read_idx))
+		return (read_idx);
 	if (ft_sorter(mem->input, &write_idx, &read_idx, &her_doc_flag) == 1)
 		return (1);
 	pipe_or_option(&write_idx, &read_idx, &pipe_wfd, &pipe_rfd);

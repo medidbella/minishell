@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:41 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 15:07:40 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 21:41:34 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ int		sort_helper(char *str1, char *str2);
 int		double_quotes(char *str);
 int		ft_echo(t_holder *mem, int write_fd);
 int		ft_pwd(t_holder *mem, int write_fd);
-int		ft_cd(t_holder *mem);
+int		ft_cd(t_holder *mem, char *curr_dir);
 int		ft_env(t_holder *mem, int write_fd);
-int		ft_unset(t_input *da, t_list **env);
-void	ft_exit(t_holder *mem);
+int		ft_unset(t_input *data, t_list **env);
+int		ft_exit(t_holder *mem);
 int		is_optoin(char *arg);
 int		here_doc(t_holder *mem, char *delimiter, int write_fd);
 void	here_doc_sim(char *delimiter);
@@ -47,7 +47,7 @@ char	**prep_env(t_list *env);
 void	open_failer(char *err_msg, char *file);
 int		ft_sorter(t_input *cmd_node, int *write_idx,
 			int *read_idx, int *here_doc);
-void	set_read_write(t_options *list, int *last_w, int *last_r);
+void	_write(t_options *list, int *last_w, int *last_r);
 void	case_of_error(t_options *tst_node, int *flag);
 void	set_read_write(t_options *list, int *last_w, int *last_r);
 int		get_input_output(t_options *iter, int *node_idx, int *her_doc);
@@ -58,4 +58,6 @@ void	pipe_or_option(int *write_idx, int *read_idx,
 void	close_unused_pipes(int **pipes, int w_fd, int r_fd);
 int		exec_builtin(t_holder *mem, int write_fd, int read_fd);
 char	*ft_get_env(char *var, t_list *env);
+void	set_old_pwd(t_holder *mem, char *old_pwd);
+void	child_mem_free(t_holder *mem, char **child_env);
 #endif

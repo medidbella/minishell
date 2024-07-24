@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 21:27:15 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/22 10:47:52 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:38:19 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 
 int	main(int ac, char **av, char **envp)
 {
@@ -29,6 +30,7 @@ int	main(int ac, char **av, char **envp)
 			return (1);
 		add_history(read_line);
 		block.input = ft_parsing(read_line, environment);
+		// print_it(block.input);
 		global_exec(&block);
 		free_inputs(block.input);
 	}

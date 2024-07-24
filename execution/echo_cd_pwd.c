@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 15:10:44 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:03:29 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ void	echo_helper(char **av, int write_fd)
 
 	index = 1;
 	flag = 0;
+	if (write_fd == -1)
+		write_fd = 1;
 	while (av[index])
 	{
-		if (is_optoin(av[index]) && flag == 0)
+		if (is_optoin(av[index]) && flag == 0 && av[index])
 		{
 			flag = 1;
 			while (is_optoin(av[index]) && av[index])
@@ -42,8 +44,6 @@ int	ft_echo(t_holder *mem, int write_fd)
 {
 	int	id;
 
-	if (write_fd == -1)
-		write_fd = 1;
 	if (mem->pipes == NULL)
 		return (echo_helper(mem->input->cmd_av, write_fd), 0);
 	id = fork();
@@ -51,6 +51,8 @@ int	ft_echo(t_holder *mem, int write_fd)
 		return (1);
 	if (id == 0)
 	{
+		if (write_fd == -1)
+		write_fd = 1;
 		close_unused_pipes(mem->pipes, write_fd, -1);
 		echo_helper(mem->input->cmd_av, write_fd);
 		close(write_fd);
@@ -65,6 +67,8 @@ void	pwd_helper(int write_fd)
 {
 	char	*path;
 
+	if (write_fd == -1)
+		write_fd = 1;
 	path = getcwd(NULL, PATH_MAX);
 	ft_putstr_fd(path, write_fd);
 	ft_putchar_fd('\n', write_fd);
@@ -73,11 +77,8 @@ void	pwd_helper(int write_fd)
 
 int	ft_pwd(t_holder *mem, int write_fd)
 {
-	char	*path;
 	int		id;
 
-	if (write_fd == -1)
-		write_fd = 1;
 	if (!mem->pipes)
 		return (pwd_helper(write_fd), 0);
 	id = fork();
@@ -85,6 +86,8 @@ int	ft_pwd(t_holder *mem, int write_fd)
 		return (1);
 	if (id == 0)
 	{
+		if (write_fd == -1)
+		write_fd = 1;
 		close_unused_pipes(mem->pipes, write_fd, -1);
 		pwd_helper(write_fd);
 		close(write_fd);
@@ -95,7 +98,7 @@ int	ft_pwd(t_holder *mem, int write_fd)
 	return (0);
 }
 
-int	ft_cd(t_holder *mem)
+int	ft_cd(t_holder *mem, char *curr_dir)
 {
 	int	r_val;
 	int	id;
@@ -119,5 +122,6 @@ int	ft_cd(t_holder *mem)
 	if (chdir(mem->input->cmd_av[1]) != 0)
 		return (ft_putstr_fd("cd: ", 2),
 			ft_putstr_fd(mem->input->cmd_av[1], 2), perror(NULL), 1);
+	set_old_pwd(mem, curr_dir);
 	return (0);
 }

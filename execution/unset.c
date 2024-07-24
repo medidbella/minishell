@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 16:21:09 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/07 16:09:41 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/22 14:44:10 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	name_cmp(char *env_var, char *var)
 	i = 0;
 	while (var[i] == env_var[i] && var[i] && env_var[i] && env_var[i] != '=')
 		i++;
-	if (i == ft_strlen(var) && (env_var[i] == '=' || env_var[i] == 0))
+	if (i == (int)ft_strlen(var) && (env_var[i] == '=' || env_var[i] == 0))
 		return (1);
 	else
 		return (0);
