@@ -6,6 +6,7 @@ SOURCE_FILES =  execution/builtin_exec.c execution/echo_cd_pwd.c\
 				execution/general_helpers.c execution/here_doc.c\
 				execution/export_helpers.c execution/pipes.c\
 				execution/starting_point.c execution/unset.c\
+				execution/extra_cases.c\
 				parsing/ft_expansion.c parsing/ft_expansion_utils_2.c\
 				parsing/ft_expansion_utils.c parsing/ft_free.c\
 				parsing/get_list_and_cmds.c parsing/get_list_and_cmds_utils.c\

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 12:03:29 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:19:07 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	ft_echo(t_holder *mem, int write_fd)
 	if (id == 0)
 	{
 		if (write_fd == -1)
-		write_fd = 1;
+			write_fd = 1;
 		close_unused_pipes(mem->pipes, write_fd, -1);
 		echo_helper(mem->input->cmd_av, write_fd);
 		close(write_fd);
@@ -87,7 +87,7 @@ int	ft_pwd(t_holder *mem, int write_fd)
 	if (id == 0)
 	{
 		if (write_fd == -1)
-		write_fd = 1;
+			write_fd = 1;
 		close_unused_pipes(mem->pipes, write_fd, -1);
 		pwd_helper(write_fd);
 		close(write_fd);

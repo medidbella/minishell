@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:41 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 21:41:34 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/26 13:23:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,5 @@ int		exec_builtin(t_holder *mem, int write_fd, int read_fd);
 char	*ft_get_env(char *var, t_list *env);
 void	set_old_pwd(t_holder *mem, char *old_pwd);
 void	child_mem_free(t_holder *mem, char **child_env);
+void	set_shell_lvl(t_list	*envi);
 #endif

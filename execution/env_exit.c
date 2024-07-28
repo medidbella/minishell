@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 12:32:57 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/26 13:23:36 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	ft_env(t_holder *mem, int write_fd)
 	if (id == 0)
 	{
 		if (write_fd == -1)
-		write_fd = 1;
+			write_fd = 1;
 		close_unused_pipes(mem->pipes, write_fd, -1);
 		r_val = env_helper(mem->env, write_fd);
 		close(write_fd);
@@ -77,12 +77,15 @@ void	exit_helper(char **av, int *flag)
 	i = 0;
 	while (av[1] && av[1][i])
 	{
-		if (!ft_isdigit(av[1][i++]))
+		if ((!ft_isdigit(av[1][i]) && av[1][i] != '+' && av[1][i] != '-')
+				|| ((av[1][i] == '+' || av[1][i] == '-') && i != 0))
 		{
-			ft_putstr_fd("exit\nminishell: exit: numeric argument required\n", 2);
+			ft_putstr_fd("exit\nminishell: exit: numeric argument required\n",
+				2);
 			if (*flag)
 				exit(2);
 		}
+		i++;
 	}
 	if (av[1] && av[2])
 	{

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:01:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 21:43:04 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:19:40 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	exec_builtin_helper(t_holder *mem, int write_fd)
 int	exec_builtin(t_holder *mem, int write_fd, int read_fd)
 {
 	if (!mem->input->cmd_av)
-		return
+		return (0);
 	close(read_fd);
 	if (!ft_strncmp("env", mem->input->cmd_av[0], 6))
 		return (ft_env(mem, write_fd));
