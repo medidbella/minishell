@@ -6,17 +6,40 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 17:54:14 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 18:28:14 by midbella         ###   ########.fr       */
+/*   Updated: 2024/07/29 20:21:45 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+void	del_log_file()
+{
+	char	*av[4];
+	int		id;
+
+	id = fork();
+	if (id == 0)
+	{
+		av[0] = "rm";
+		av[1] = "-f";
+		av[2] = "/tmp/latest_minishell_here_doc";
+		av[3] = NULL;
+		execve("/usr/bin/rm", av, NULL);
+		exit(0);
+	}
+	wait(&id);
+	return ;
+}
+
 void	check_and_send(char *new_line, char *delimiter, int *flag, int pipe_fd)
 {
-	int		i;
-
-	i = 0;
+	if (!new_line)
+	{
+		print_error(ft_strjoin("warning: here-doc delimited by EOF, wanted ",
+			delimiter));
+		*flag = 0;
+		return ;
+	}
 	if (ft_strncmp(new_line, delimiter,
 			ft_strlen(new_line) + ft_strlen(delimiter)) != 0)
 	{
@@ -44,6 +67,7 @@ int	here_doc(t_holder *mem, char *delimiter, int write_fd)
 	int		fds[2];
 	int		flag;
 
+	del_log_file();
 	if (!mem->input)
 		return (here_doc_sim(delimiter), 0);
 	fds[0] = open("/tmp/latest_minishell_here_doc", O_CREAT | O_RDWR, 0644);
