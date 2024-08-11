@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:05:26 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/19 09:38:35 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:13:40 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ int	**pipes_creator(int number)
 	i = 0;
 	result = malloc(sizeof(int *) * (number));
 	result[number - 1] = NULL;
-	while (result[i])
+	while (i < number - 1)
 	{
 		result[i] = malloc(sizeof(int) * 2);
-		pipe(result[i]);
+		if (pipe(result[i]) == -1)
+			return (NULL);
 		i++;
 	}
 	return (result);
@@ -60,6 +61,8 @@ void	close_and_free_pipes(int **fds)
 	int	index;
 
 	index = 0;
+	if (!fds)
+		return ;
 	while (fds[index])
 	{
 		close(fds[index][1]);
@@ -68,4 +71,5 @@ void	close_and_free_pipes(int **fds)
 		index++;
 	}
 	free(fds);
+	fds = NULL;
 }

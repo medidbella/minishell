@@ -5,133 +5,117 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/12 20:43:31 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
+/*   Created: 2024/07/31 22:47:56 by alaktari          #+#    #+#             */
+/*   Updated: 2024/08/07 22:36:19 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	is_there_single_quotes(char *splited)
+static void	replace_special_chars(char *p_to_char)
 {
-	int	i;
-
-	i = -1;
-	while (splited[++i])
-	{
-		if (splited[i] == '"')
-		{
-			i++;
-			while (splited[i] != '"')
-				i++;
-		}
-		if (splited[i] == 39)
-			return (1);
-	}
-	return (0);
+	if (*p_to_char == S_QUOTES)
+		*p_to_char = 39;
+	else if (*p_to_char == D_QUOTES)
+		*p_to_char = '"';
+	else if (*p_to_char == DOLLAR)
+		*p_to_char = '$';
+	else if (*p_to_char == SPACES)
+		*p_to_char = ' ';
+	else if (*p_to_char == IN_RED)
+		*p_to_char = '<';
+	else if (*p_to_char == OUT_RED)
+		*p_to_char = '>';
 }
 
-void	check_cases(char *splited, int *x, int *y, char *new_str)
+static int	for_list(t_options *list, int x)
 {
-	while (splited[(*x)])
-	{
-		if (splited[(*x)] == '$' && splited[(*x) + 1] == 39)
-			(*x)++;
-		else if (splited[(*x)] == 39 && (*x) && splited[(*x) - 1] == '$')
-		{
-			(*x)++;
-			while (splited[(*x)] != 39 && splited[(*x)])
-				new_str[(*y)++] = splited[(*x)++];
-		}
-		else if (splited[(*x)] != 39 && splited[(*x)] != '$' && splited[(*x)])
-			new_str[(*y)++] = splited[(*x)++];
-		else if (splited[(*x)] == '$' && (*x) && splited[(*x) - 1] == 39)
-		{
-			new_str[(*y)++] = -2;
-			(*x)++;
-		}
-		else if (splited[(*x)] == '$')
-			new_str[(*y)++] = splited[(*x)++];
-		else
-			(*x)++;
-	}
-}
-
-int	remove_single_quotes(char **splited, int i, int x, int y)
-{
+	char	**str;
 	char	*new_str;
 
-	while (splited[++i])
+	while (list)
 	{
-		if (!is_there_single_quotes(splited[i]))
-			continue ;
-		new_str = malloc(sizeof(char) * (ft_strlen(splited[i]) + 1));
+		if (list->input)
+			str = &(list->input);
+		else if (list->out)
+			str = &(list->out);
+		else if (list->limiter)
+			str = &(list->limiter);
+		x = -1;
+		while ((*str)[++x])
+			replace_special_chars(&((*str)[x]));
+		new_str = get_return_value(*str);
 		if (!new_str)
 			return (0);
-		x = 0;
-		y = 0;
-		while (splited[i][x])
-			check_cases(splited[i], &x, &y, new_str);
-		new_str[y] = '\0';
-		free(splited[i]);
-		splited[i] = new_str;
+		*str = new_str;
+		list = list->next;
 	}
 	return (1);
 }
 
-void	dollar_sign_in_list(t_options *list)
+int	quotes_cases_2(t_input *input)
 {
-	char	*in_out;
+	int		i;
 	int		x;
-
-	while (list)
-	{
-		in_out = NULL;
-		if (list->limiter)
-			in_out = list->limiter;
-		else if (list->input)
-			in_out = list->input;
-		else if (list->out)
-			in_out = list->out;
-		if (in_out)
-		{
-			x = 0;
-			while (in_out[x])
-			{
-				if (in_out[x] == -2)
-					in_out[x] = '$';
-				x++;
-			}
-		}
-		list = list->next;
-	}
-}
-
-void	return_dollar_sign(t_input *input)
-{
-	int			i;
-	int			x;
-	t_options	*list;
+	char	*new_cmd;
 
 	while (input)
 	{
 		if (input->cmd_av)
 		{
-			i = 0;
-			while (input->cmd_av[i])
+			i = -1;
+			while (input->cmd_av[++i])
 			{
-				x = 0;
-				while (input->cmd_av[i][x])
-				{
-					if (input->cmd_av[i][x] == -2)
-						input->cmd_av[i][x] = '$';
-					x++;
-				}
-				i++;
+				x = -1;
+				while (input->cmd_av[i][++x])
+					replace_special_chars(&(input->cmd_av[i][x]));
+				new_cmd = get_return_value(input->cmd_av[i]);
+				if (!new_cmd)
+					return (0);
+				input->cmd_av[i] = new_cmd;
 			}
 		}
-		list = input->list;
-		dollar_sign_in_list(input->list);
+		if (!for_list(input->list, 0))
+			return (0);
 		input = input->next;
+	}
+	return (1);
+}
+
+void	case_of_dollar_sign(char *splited)
+{
+	int	i;
+
+	i = 0;
+	while (splited[i])
+	{
+		if ((splited[i] == '$') && (splited[i + 1] == REMOVE))
+			splited[i] = REMOVE;
+		else if (splited[i] == '$' && splited[i + 1] == '$')
+			splited[i] = DOLLAR;
+		i++;
+	}
+}
+
+void	case_of_exit_statu(char *splited)
+{
+	int	i;
+
+	i = 0;
+	while (splited[i])
+	{
+		if (splited[i] == '$' && splited[i + 1] == '?')
+		{
+			splited[i] = EXIT_STATUS;
+			i++;
+			splited[i] = EXIT_STATUS;
+		}
+		else if (splited[i] == '$' && splited[i + 1] == '$')
+		{
+			while (splited[i] == '$')
+				splited[i++] = DOLLAR;
+			i--;
+		}
+		i++;
 	}
 }

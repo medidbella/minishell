@@ -6,35 +6,49 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 21:27:15 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/29 19:10:38 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:34:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-unsigned char	*r_val;
+t_sig	*g_status;
+
+void	init_struct(t_holder *block, char **envp, t_sig *info)
+{
+	block->env = NULL;
+	block->pipes = NULL;
+	block->input = NULL;
+	g_status = info;
+	info->r_val = 0;
+	block->env = envron_dup(envp);
+	set_shell_lvl(block->env);
+}
 
 int	main(int ac, char **av, char **envp)
 {
-	t_holder	block;
-	t_list		*environment;
 	char		*read_line;
+	t_holder	block;
+	t_input		*holder;
+	t_sig		info;
 
-	r_val = &block.last_r_val;
-	environment = envron_dup(envp);
-	set_shell_lvl(environment);
-	block.env = environment;
-	block.last_r_val = 0;
-	signal(SIGINT, sigint_handler);
+	if (ac > 1)
+		return (ft_putstr_fd("arguments are not allowed\n", 2), 1);
+	(void)av;
+	init_struct(&block, envp, &info);
 	signal(SIGQUIT, SIG_IGN);
- 	while (1)
+	signal(SIGINT, sigint_handler);
+	while (1)
 	{
 		read_line = readline("MINISHELL : ");
 		if (!read_line)
-			return (write(1, "exit\n", 5), 0);
+			return (lstfree(block.env), write(2, "exit\n", 5), 0);
 		add_history(read_line);
-		block.input = ft_parsing(read_line, environment);
+		g_status->sig_kill_flag = 0;
+		block.input = ft_parsing(read_line, block.env);
+		holder = block.input;
+		free(read_line);
 		global_exec(&block);
-		free_inputs(block.input);
+		free_inputs(holder);
 	}
 }

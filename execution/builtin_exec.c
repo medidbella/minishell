@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:01:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/25 17:19:40 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:54:08 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	exec_builtin_helper(t_holder *mem, int write_fd)
 	}
 	wait(&r_val);
 	close(write_fd);
-	return (r_val);
+	return (WEXITSTATUS(r_val));
 }
 
 int	exec_builtin(t_holder *mem, int write_fd, int read_fd)

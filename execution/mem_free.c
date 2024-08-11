@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:21:23 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/25 17:18:36 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:36:19 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	free_strings(char **strs)
 	int	i;
 
 	i = 0;
+	if (!strs)
+		return ;
 	while (strs[i])
 	{
 		free(strs[i]);
@@ -25,7 +27,7 @@ void	free_strings(char **strs)
 	free(strs);
 }
 
-void	lst_free(t_list *list)
+void	lstfree(t_list *list)
 {
 	t_list	*tmp;
 
@@ -42,5 +44,14 @@ void	child_mem_free(t_holder *mem, char **child_env)
 {
 	free(child_env);
 	free_inputs(mem->input);
-	lst_free(mem->env);
+	lstfree(mem->env);
+	close_and_free_pipes(mem->pipes);
+}
+
+void	init_vars(int *a, int *b, int *c, int *d)
+{
+	*a = -1;
+	*b = -1;
+	*c = -1;
+	*d = -1;
 }

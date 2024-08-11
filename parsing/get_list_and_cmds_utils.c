@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 22:55:24 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/08 15:37:36 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,12 @@ int	check_built_in(t_input	*input)
 {
 	int		len;
 	char	*cmd;
+	char	*new_cmd;
 
+	new_cmd = start_removing(input->cmd_av[0]);
+	if (!new_cmd)
+		return (0);
+	input->cmd_av[0] = new_cmd;
 	if (input->cmd_av && input->cmd_av[0])
 	{
 		cmd = input->cmd_av[0];
@@ -98,8 +103,7 @@ int	output_and_append_redirection(t_options *list, char *str, int len, int who)
 	return (1);
 }
 
-int	get_file_name_or_limiter(t_input *input, char *str,
-			t_options *new_list, int who)
+int	get_file_name_or_limiter(char *str, t_options *new_list, int who)
 {
 	int	len;
 	int	x;

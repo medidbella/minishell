@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_expansion_utils.c                               :+:      :+:    :+:   */
+/*   ft_expansion_utils_1.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:01:03 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/07 22:36:19 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	ft_lst_add_back(t_expnd **lst, t_expnd *new)
 	}
 }
 
-int	get_the_len(t_expnd *expnd, int read_line_len)
+int	get_the_len(t_expnd *expnd, int str_len)
 {
 	int	len;
 	int	vars_len;
@@ -67,15 +67,15 @@ int	get_the_len(t_expnd *expnd, int read_line_len)
 		}
 		expnd = expnd->next;
 	}
-	len = read_line_len - vars_len + values_len + 1;
+	len = str_len - vars_len + values_len + 1;
 	return (len);
 }
 
-void	ft_infos(t_list *env, t_expnd *expnd, char *var)
+void	ft_infos(t_list *env, t_expnd *expnd, char *search_var)
 {
 	while (env)
 	{
-		if (!strncmp(env->content, var, expnd->var_len))
+		if (!strncmp(env->content, search_var, expnd->var_len))
 		{
 			expnd->env = env;
 			expnd->value_len = ft_strlen(env->content) - expnd->var_len;

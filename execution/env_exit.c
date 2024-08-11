@@ -6,25 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/26 13:23:36 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:34:28 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	locate_char(char *str, char c)
-{
-	int	index;
-
-	index = 0;
-	while (str[index])
-	{
-		if (str[index] == c)
-			return (1);
-		index++;
-	}
-	return (0);
-}
 
 int	env_helper(t_list *env, int write_fd)
 {
@@ -70,7 +56,7 @@ int	ft_env(t_holder *mem, int write_fd)
 	return (r_val);
 }
 
-void	exit_helper(char **av, int *flag)
+int	exit_helper(char **av, int *flag, int *r_val, t_holder *mem)
 {
 	int	i;
 
@@ -83,40 +69,39 @@ void	exit_helper(char **av, int *flag)
 			ft_putstr_fd("exit\nminishell: exit: numeric argument required\n",
 				2);
 			if (*flag)
-				exit(2);
+				return (free_inputs(mem->input), lstfree(mem->env), exit(2), 0);
+			else
+				return (*r_val = 2, 0);
 		}
 		i++;
 	}
 	if (av[1] && av[2])
 	{
 		ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2);
-		*flag = 0;
-		return ;
+		return (*r_val = 1, *flag = -1, 0);
 	}
-	return ;
+	if (av[1])
+		return (*r_val = ft_atoi(av[1]));
+	return (*r_val = 0);
 }
 
 int	ft_exit(t_holder *mem)
 {
-	int	i;
 	int	exit_val;
 	int	flag;
 
 	exit_val = 0;
-	i = 0;
 	flag = 0;
 	if (!mem->pipes)
 		flag = 1;
-	exit_helper(mem->input->cmd_av, &flag);
-	if (!flag)
-		return (1);
-	if (mem->input->cmd_av[1])
-		exit_val = ft_atoi(mem->input->cmd_av[1]);
-	if (flag)
+	exit_helper(mem->input->cmd_av, &flag, &exit_val, mem);
+	if (flag <= 0)
+		return (exit_val);
+	if (flag != -1)
 	{
-		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit\n", 2);
 		free_inputs(mem->input);
-		lst_free(mem->env);
+		lstfree(mem->env);
 		exit(exit_val);
 	}
 	return (exit_val);

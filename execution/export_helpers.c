@@ -6,26 +6,24 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/23 11:48:36 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:45:54 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	double_quotes(char *str)
+int	extra_case(char *str)
 {
 	int	i;
-	int	count;
 
-	count = 0;
 	i = 0;
-	while (str[i])
-		if (str[i++] == '"')
-			count++;
-	if (count % 2 != 0)
-		return (0);
-	else
-		return (1);
+	while (str[i] && str[i] != '=' && str[i] != '+')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 void	printer(t_list *head, int write_fd)
@@ -59,24 +57,20 @@ void	printer(t_list *head, int write_fd)
 
 void	error_detector(char *av, int *return_val)
 {
+	int		i;
 	char	*tmp;
 
-	*return_val = 0;
-	while (av[*return_val] && av[*return_val] != '+')
-		*return_val += 1;
-	if ((!ft_isalpha(av[0]) && av[0] != '"') || (av[*return_val] == '+'
-			&& av[*return_val + 1] != '='))
+	i = 0;
+	while (av[i] && av[i] != '+')
+		i++;
+	if ((!ft_isalpha(av[0]) && av[0] != '_') || (av[i] == '+'
+			&& av[i + 1] != '=') || extra_case(av))
 	{
 		tmp = ft_strjoin("minishell: export:`", av);
-		print_error(ft_strjoin(tmp, "':not a valid indentifier"));
+		print_error(ft_strjoin(tmp, "': not a valid identifier"));
 		av[0] = 0;
 		*return_val = 1;
 		return (free(tmp));
-	}
-	else if (!double_quotes(av))
-	{
-		*return_val = 1;
-		av[0] = 0;
 	}
 }
 

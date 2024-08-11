@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/21 14:59:31 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:34:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	lexicographical_sort(t_list *head, int write_fd)
 		}
 	}
 	printer(head, write_fd);
-	lst_free(head);
+	lstfree(head);
 }
 
 void	new_environ(t_list *env, char *var, char *val)
@@ -129,8 +129,8 @@ int	ft_export(t_holder *mem, int write_fd)
 	if (write_fd == -1)
 		write_fd = 1;
 	return_val = 0;
-	if (!mem->input->cmd_av[1])
-		lexicographical_sort(mem->env, write_fd);
+	if (!mem->input->cmd_av[1] && mem->env)
+		return (lexicographical_sort(mem->env, write_fd), 0);
 	while (mem->input->cmd_av[i])
 	{
 		error_detector(mem->input->cmd_av[i], &return_val);

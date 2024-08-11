@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 15:37:16 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/22 10:42:07 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/08 15:09:12 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,66 +55,67 @@ void	case_of_pipe_inside_quotes_2(char **splited)
 	}
 }
 
-int	remove_double_quotes(char **cmd_av, int i)
+static void	case_of_single_quotes(char *splited, int *x)
 {
+	splited[(*x)++] = REMOVE;
+	while (splited[*x] != 39)
+	{
+		if (splited[*x] == ' ')
+			splited[*x] = SPACES;
+		else if (splited[*x] == '"')
+			splited[*x] = D_QUOTES;
+		else if (splited[*x] == '$')
+			splited[*x] = DOLLAR;
+		else if (splited[*x] == '<')
+			splited[*x] = IN_RED;
+		else if (splited[*x] == '>')
+			splited[*x] = OUT_RED;
+		(*x)++;
+	}
+	splited[*x] = REMOVE;
+}
+
+static void	case_of_double_quotes(char *splited, int *x)
+{
+	splited[(*x)++] = REMOVE;
+	while (splited[*x] != '"')
+	{
+		if (splited[*x] == 39)
+			splited[*x] = S_QUOTES;
+		else if (splited[*x] == ' ')
+			splited[*x] = SPACES;
+		else if (splited[*x] == '<')
+			splited[*x] = IN_RED;
+		else if (splited[*x] == '>')
+			splited[*x] = OUT_RED;
+		else if ((splited[*x] == '$') && ((!splited[(*x) + 1])
+				|| (splited[(*x) + 1] == ' ') || (splited[(*x) + 1] == 39)
+				|| (splited[(*x) + 1] == '"') || (splited[(*x) + 1] == '$')))
+			splited[*x] = DOLLAR;
+		(*x)++;
+	}
+	splited[*x] = REMOVE;
+}
+
+int	quotes_cases_1(char **splited)
+{
+	int		i;
 	int		x;
-	char	*new_str;
-	int		y;
 
 	i = -1;
-	while (cmd_av[++i])
+	while (splited[++i])
 	{
 		x = 0;
-		y = 0;
-		if (cmd_av[i][0] == '"')
+		while (splited[i][x])
 		{
-			new_str = malloc(sizeof(char) * (ft_strlen(cmd_av[i]) - 1));
-			if (!new_str)
-				return (0);
-			while (cmd_av[i][++x])
-			{
-				if (cmd_av[i][x] != '"')
-					new_str[y++] = cmd_av[i][x];
-			}
-			new_str[y] = '\0';
-			free(cmd_av[i]);
-			cmd_av[i] = new_str;
+			if (splited[i][x] == 39)
+				case_of_single_quotes(splited[i], &x);
+			else if (splited[i][x] == '"')
+				case_of_double_quotes(splited[i], &x);
+			x++;
 		}
+		case_of_dollar_sign(splited[i]);
+		case_of_exit_statu(splited[i]);
 	}
 	return (1);
-}
-
-void	case_of_spaces_inside_double_quotes_1(char *s2)
-{
-	int	i;
-
-	i = -1;
-	while (s2[++i])
-	{
-		if (s2[i] == '"')
-		{
-			while (s2[++i] != '"')
-			{
-				if (s2[i] == ' ')
-					s2[i] = -1;
-			}
-		}
-	}
-}
-
-void	case_of_spaces_inside_double_quotes_2(char **cmd_av)
-{
-	int	i;
-	int	x;
-
-	i = -1;
-	while (cmd_av[++i])
-	{
-		x = -1;
-		while (cmd_av[i][++x])
-		{
-			if (cmd_av[i][x] == -1)
-				cmd_av[i][x] = ' ';
-		}
-	}
 }

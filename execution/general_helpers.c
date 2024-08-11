@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 14:50:54 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/23 11:49:44 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 19:40:41 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_list	*ft_listdup(t_list *list)
 	t_list	*head;
 	t_list	*iter;
 
+	if (!list)
+		return (NULL);
 	head = ft_lstnew(ft_strdup(list->content));
 	iter = head;
 	list = list->next;
@@ -56,27 +58,29 @@ void	swap_str(char **str1, char **str2, int *flag)
 
 int	is_optoin(char *arg)
 {
-	int	index;
+	int	i;
 
-	index = 0;
-	if (ft_strlen(arg) == 2 && arg[0] == '-' && arg[1] == 'n')
-		return (1);
-	else
+	i = 1;
+	if (!arg || arg[0] != '-')
 		return (0);
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-void	set_old_pwd(t_holder *mem, char *old_pwd)
+int	inputs_count(t_input *inpt_list)
 {
-	char	*tab[3];
-	char	**temp;
+	int	i;
 
-	tab[0] = "export";
-	tab[1] = ft_strjoin("OLDPWD=", old_pwd);
-	tab[2] = NULL;
-	temp = mem->input->cmd_av;
-	mem->input->cmd_av = tab;
-	ft_export(mem, 1);
-	mem->input->cmd_av = temp;
-	free(tab[1]);
-	free(old_pwd);
+	i = 0;
+	while (inpt_list)
+	{
+		i++;
+		inpt_list = inpt_list->next;
+	}
+	return (i);
 }

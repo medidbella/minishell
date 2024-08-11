@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 16:21:09 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/22 14:44:10 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:03:39 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	ft_unset(t_input *data, t_list **env)
 
 	i = 0;
 	err_msg = ("minishell: unset: no option is supported");
-	if (data->cmd_av[1][0] == '-')
+	if (data->cmd_av[1] && data->cmd_av[1][0] == '-')
 		return (print_error(ft_strdup(err_msg)), 2);
 	while (data->cmd_av[++i])
 	{
@@ -77,6 +77,20 @@ int	ft_unset(t_input *data, t_list **env)
 			index++;
 			iter = iter->next;
 		}
+	}
+	return (0);
+}
+
+int	locate_char(char *str, char c)
+{
+	int	index;
+
+	index = 0;
+	while (str[index])
+	{
+		if (str[index] == c)
+			return (1);
+		index++;
 	}
 	return (0);
 }

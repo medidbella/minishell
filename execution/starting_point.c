@@ -6,40 +6,13 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:39:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/24 21:38:06 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:31:15 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	opt_iter(t_input *input, int *write_idx, int *read_idx)
-{
-	int	err_flag;
-	int	index;
-
-	index = 0;
-	err_flag = 0;
-	while (input->list->next)
-	{
-		if (input->list->who == HERE_DOC && index != *read_idx)
-			here_doc_sim(input->list->limiter);
-		else if (index != *read_idx && index != *write_idx)
-			case_of_error(input->list, &err_flag);
-		if (!input->cmd_av || index != *read_idx || index != *write_idx)
-		{
-			case_of_error(input->list, &err_flag);
-			if (err_flag)
-				*write_idx = 1;
-			else
-				*write_idx = 2;
-		}
-		if (err_flag)
-			return (1);
-		index++;
-		input->list = input->list->next;
-	}
-	return (0);
-}
+extern t_sig	*g_status;
 
 int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 {
@@ -52,7 +25,8 @@ int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 		return (0);
 	while (++index != *node_idx)
 		iter = iter->next;
-	file = iter->input;
+	if (iter->who == INPUT_RD)
+		file = iter->input;
 	if (iter->who == RD_APND || iter->who == RD_TRNC)
 		file = iter->out;
 	if (iter->who == HERE_DOC)
@@ -76,26 +50,25 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 	int		return_val;
 	int		id;
 
+	return_val = 0;
 	if (!mem->input->cmd_av || mem->input->type == BUILTIN)
 		return (exec_builtin(mem, w_fd, r_fd));
 	bin_path = find_path(mem->input->cmd_av[0], mem->env);
+	signal(SIGINT, SIG_IGN);
 	id = fork();
 	if (id == -1)
-		return (1);
+		return (free(bin_path), 1);
 	if (id == 0)
 	{
-		close_unused_pipes(mem->pipes, w_fd, r_fd);
-		if (w_fd >= 0)
-			dup2(w_fd, 1);
-		if (r_fd >= 0)
-			dup2(r_fd, 0);
-		child_env = prep_env(mem->env);
+		signal(SIGINT, child_sigint);
+		signal(SIGQUIT, SIG_DFL);
+		pre_execve(mem, w_fd, r_fd, &child_env);
 		execve(bin_path, mem->input->cmd_av, child_env);
-		print_error(ft_strjoin("command not found :", bin_path));
+		execve_failure(bin_path, &return_val);
 		child_mem_free(mem, child_env);
-		exit (127);
+		exit (return_val);
 	}
-	return (wait(&return_val), close(w_fd), close(r_fd), return_val);
+	return (close(w_fd), close(r_fd), free(bin_path), WEXITSTATUS(return_val));
 }
 
 int	exec_manager(t_holder *mem, int pipe_wfd, int pipe_rfd)
@@ -105,50 +78,63 @@ int	exec_manager(t_holder *mem, int pipe_wfd, int pipe_rfd)
 	int			read_idx;
 	int			her_doc_flag;
 
-	write_idx = -1;
-	read_idx = -1;
-	her_doc_flag = -1;
+	init_vars(&idx, &write_idx, &read_idx, &her_doc_flag);
 	if (!mem->input->list)
-		return (executer(mem, pipe_wfd, pipe_rfd));
+		return (g_status->r_val = executer(mem, pipe_wfd, pipe_rfd),
+			g_status->sig_kill_flag);
 	set_read_write(mem->input->list, &write_idx, &read_idx);
-	if (opt_iter(mem->input, &write_idx, &read_idx))
-		return (read_idx);
-	if (ft_sorter(mem->input, &write_idx, &read_idx, &her_doc_flag) == 1)
-		return (1);
+	if (opt_iter(mem->input->list, &write_idx, &read_idx, mem->pipes))
+		return (g_status->r_val = 1, 0);
+	if (ft_sorter(mem->input->list, &write_idx, &read_idx, &her_doc_flag) == 1)
+		return (g_status->r_val = 1, 0);
 	pipe_or_option(&write_idx, &read_idx, &pipe_wfd, &pipe_rfd);
 	if (her_doc_flag != -1)
 	{
-		idx = -1;
-		read_idx *= -1;
 		while (++idx != her_doc_flag)
 			mem->input->list = mem->input->list->next;
 		return (here_doc(mem, mem->input->list->limiter, write_idx));
 	}
-	return (executer(mem, write_idx, read_idx));
+	g_status->r_val = executer(mem, write_idx, read_idx);
+	return (g_status->sig_kill_flag);
 }
 
-int	global_exec(t_holder *mem)
+void	exec_loop(t_holder *mem, int count)
 {
 	int	pipe_index;
-	int	count;
 
-	count = inputs_count(mem->input);
 	pipe_index = 1;
-	if (count == 0)
-		return (0);
 	if (count == 1)
-		return (mem->pipes = NULL, exec_manager(mem, -1, -1));
+	{
+		mem->pipes = NULL;
+		exec_manager(mem, -1, -1);
+		return ;
+	}
 	mem->pipes = pipes_creator(count);
-	exec_manager(mem, mem->pipes[0][1], -1);
+	if (exec_manager(mem, mem->pipes[0][1], -1))
+		return ;
 	mem->input = mem->input->next;
 	while (mem->input->next)
 	{
-		exec_manager(mem, mem->pipes[pipe_index][1],
-			mem->pipes[pipe_index - 1][0]);
+		if (exec_manager(mem, mem->pipes[pipe_index][1],
+			mem->pipes[pipe_index - 1][0]))
+			return ;
 		mem->input = mem->input->next;
 		pipe_index++;
 	}
 	exec_manager(mem, -1, mem->pipes[count - 2][0]);
-	close_and_free_pipes(mem->pipes);
-	return (0);
+}
+
+int	global_exec(t_holder *mem)
+{
+	int	count;
+
+	count = inputs_count(mem->input);
+	if (count == 0)
+		return (0);
+	exec_loop(mem, count);
+	while (1)
+		if (wait(NULL) == -1)
+			break ;
+	signal(SIGINT, sigint_handler);
+	return (close_and_free_pipes(mem->pipes), 0);
 }

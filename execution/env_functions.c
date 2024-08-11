@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 12:50:38 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/26 11:57:58 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:14:43 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,18 @@
 t_list	*envron_dup(char **environ)
 {
 	int			index;
+	char		*str;
 	t_list		*head;
 	t_list		*iter;
 
+	if (!environ[0])
+	{
+		str = getcwd(NULL, PATH_MAX);
+		head = ft_lstnew(ft_strjoin("PWD=", str));
+		iter = ft_lstnew(ft_strdup("OLDPWD"));
+		ft_lstadd_back(&head, iter);
+		return (free(str), head);
+	}
 	index = 1;
 	head = ft_lstnew(ft_strdup(environ[0]));
 	iter = head;

@@ -3,43 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ft_free.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 10:09:41 by alaktari          #+#    #+#             */
-/*   Updated: 2024/07/24 12:26:24 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/07 22:36:19 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+static void	free_list_in_struct(t_options *list)
+{
+	t_options	*next;
+
+	while (list)
+	{
+		free(list->input);
+		free(list->out);
+		free(list->limiter);
+		next = list->next;
+		free(list);
+		list = next;
+	}
+}
+
 void	free_inputs(t_input *input)
 {
 	int			i;
-	int			x;
-	t_options	*next;
 	t_input		*next_input;
 
-	x = 0;
-	i = 0;
 	while (input)
 	{
-		if (input->cmd_av[i])
+		if (input->cmd_av)
 		{
 			i = 0;
 			while (input->cmd_av[i])
 				free(input->cmd_av[i++]);
+			free(input->cmd_av);
 		}
-		while (input->cmd_av[i])
-			free(input->cmd_av[i++]);
-		while (input->list)
-		{
-			free(input->list->input);
-			free(input->list->out);
-			free(input->list->limiter);
-			next = input->list->next;
-			free(input->list);
-			input->list = next;
-		}
+		free_list_in_struct(input->list);
 		next_input = input->next;
 		free(input);
 		input = next_input;
@@ -66,5 +68,18 @@ void	free_expnd(t_expnd *expnd)
 		free(expnd->var);
 		free(expnd);
 		expnd = next;
+	}
+}
+
+void	free_env(t_list *env)
+{
+	t_list	*next;
+
+	while (env)
+	{
+		next = env->next;
+		free(env->content);
+		free(env);
+		env = next;
 	}
 }

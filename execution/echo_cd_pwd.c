@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/25 17:19:07 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:07:10 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,11 @@ void	pwd_helper(int write_fd)
 	if (write_fd == -1)
 		write_fd = 1;
 	path = getcwd(NULL, PATH_MAX);
+	if (!path)
+	{
+		ft_putstr_fd("current working directory is removed\n", 2);
+		return ;
+	}
 	ft_putstr_fd(path, write_fd);
 	ft_putchar_fd('\n', write_fd);
 	free(path);
@@ -121,7 +126,6 @@ int	ft_cd(t_holder *mem, char *curr_dir)
 		return (print_error(ft_strdup("cd: too many arguments")), 1);
 	if (chdir(mem->input->cmd_av[1]) != 0)
 		return (ft_putstr_fd("cd: ", 2),
-			ft_putstr_fd(mem->input->cmd_av[1], 2), perror(NULL), 1);
-	set_old_pwd(mem, curr_dir);
-	return (0);
+			ft_putstr_fd(mem->input->cmd_av[1], 2), perror(" "), 1);
+	return (set_pwd(mem), set_old_pwd(mem, curr_dir), 0);
 }

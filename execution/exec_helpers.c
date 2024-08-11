@@ -6,52 +6,33 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:41:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/07/29 16:11:16 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/11 22:29:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	inputs_count(t_input *inpt_list)
+int	opt_iter(t_options *opt, int *write_idx, int *read_idx, int **pipes)
 {
-	int	i;
+	int	err_flag;
+	int	index;
 
-	i = 0;
-	while (inpt_list)
+	index = 0;
+	err_flag = 0;
+	while (opt->next)
 	{
-		i++;
-		inpt_list = inpt_list->next;
-	}
-	return (i);
-}
-
-void	case_of_error(t_options *tst_node, int *flag)
-{
-	char	*err;
-	char	*file;
-	int		fd;
-
-	file = tst_node->out;
-	if (tst_node->who == INPUT_RD)
-	{
-		file = tst_node->input;
-		fd = open(tst_node->input, O_RDONLY);
-	}
-	else
-		fd = open(tst_node->out, O_CREAT | O_RDWR, 0644);
-	if (fd < 0)
-	{
-		err = strerror(errno);
-		while (tst_node)
+		if (opt->who == HERE_DOC && index != *read_idx)
 		{
-			if (tst_node->who == HERE_DOC)
-				here_doc_sim(tst_node->limiter);
-			tst_node = tst_node->next;
+			here_doc_sim(opt->limiter, pipes);
 		}
-		open_failer(err, file);
-		*flag = 1;
+		else if (index != *read_idx && index != *write_idx)
+			case_of_error(opt, &err_flag, pipes);
+		if (err_flag)
+			return (1);
+		index++;
+		opt = opt->next;
 	}
-	close(fd);
+	return (0);
 }
 
 void	set_read_write(t_options *list, int *last_w, int *last_r)
@@ -71,20 +52,20 @@ void	set_read_write(t_options *list, int *last_w, int *last_r)
 	return ;
 }
 
-int	ft_sorter(t_input *cmd_node, int *write_idx, int *read_idx, int *here_doc)
+int	ft_sorter(t_options *opt_list, int *write_idx, int *read_idx, int *here_doc)
 {
 	if (*write_idx < *read_idx)
 	{
-		if (get_input_output(cmd_node->list, write_idx, here_doc) == 1)
+		if (get_input_output(opt_list, write_idx, here_doc) == 1)
 			return (1);
-		if (get_input_output(cmd_node->list, read_idx, here_doc) == 1)
+		if (get_input_output(opt_list, read_idx, here_doc) == 1)
 			return (1);
 	}
 	else
 	{
-		if (get_input_output(cmd_node->list, read_idx, here_doc) == 1)
+		if (get_input_output(opt_list, read_idx, here_doc) == 1)
 			return (1);
-		if (get_input_output(cmd_node->list, write_idx, here_doc) == 1)
+		if (get_input_output(opt_list, write_idx, here_doc) == 1)
 			return (1);
 	}
 	return (0);
@@ -101,17 +82,28 @@ char	*find_path(char *find_me, t_list *env)
 	holder = find_me;
 	find_me = ft_strjoin("/", find_me);
 	paths = ft_split(ft_get_env("PATH", env), ':');
-	if (!paths)
-		return (NULL);
+	if (!paths || !holder[0] || locate_char(holder, '/'))
+		return (free(find_me), free_strings(paths), ft_strdup(holder));
 	while (1)
 	{
 		res = ft_strjoin(paths[i], find_me);
-		if (access(res, X_OK) == 0)
+		if (access(res, X_OK) == 0 && !is_dir(res))
 			break ;
 		free(res);
 		i++;
 		if (paths[i] == NULL)
-			return (free_strings(paths), free(find_me), holder);
+		{
+			free_strings(paths);
+			return (free(find_me), ft_strdup(holder));
+		}
 	}
 	return (free_strings(paths), free(find_me), res);
+}
+
+void	pre_execve(t_holder *mem, int w_fd, int r_fd, char ***child_env)
+{
+	close_unused_pipes(mem->pipes, w_fd, r_fd);
+	dup2(w_fd, 1);
+	dup2(r_fd, 0);
+	*child_env = prep_env(mem->env);
 }
