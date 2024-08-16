@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:36:16 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 21:15:33 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/12 17:39:20 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ void	sigint_handler(int sig)
 void	here_doc_sigint(int sig)
 {
 	sig *= 1;
-	g_status->r_val = 130;
+	write(1, "\n", 1);
 	exit(1);
 }

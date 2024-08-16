@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 22:47:56 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/07 22:36:19 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ static int	for_list(t_options *list, int x)
 			str = &(list->out);
 		else if (list->limiter)
 			str = &(list->limiter);
+		else
+			return (1);
 		x = -1;
 		while ((*str)[++x])
 			replace_special_chars(&((*str)[x]));

@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 02:35:10 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/09 16:22:09 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ static int	remove_special_chars(char **str)
 static int	check_for_list(t_options *list)
 {
 	char	**ptr;
-	int		x;
 
 	while (list)
 	{
@@ -91,9 +90,8 @@ static int	check_for_list(t_options *list)
 			ptr = &(list->limiter);
 		if (only_special_chars(*ptr))
 		{
-			x = -1;
-			while ((*ptr)[++x])
-				(*ptr)[x] = 0;
+			free(*ptr);
+			*ptr = NULL;
 		}
 		else if (special_and_normale_chars(*ptr))
 		{
@@ -105,7 +103,7 @@ static int	check_for_list(t_options *list)
 	return (1);
 }
 
-int	check_if_var_is_not_exist(t_input *input, int i, int x)
+int	check_if_var_is_not_exist(t_input *input, t_input *head, int i, int x)
 {
 	while (input)
 	{
@@ -131,5 +129,5 @@ int	check_if_var_is_not_exist(t_input *input, int i, int x)
 			return (0);
 		input = input->next;
 	}
-	return (1);
+	return (swap_args(head), 1);
 }

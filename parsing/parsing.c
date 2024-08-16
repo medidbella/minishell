@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:50:07 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/09 16:37:15 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ char	**split_read_line(char *read_line)
 	i = -1;
 	if (!ft_errors(read_line))
 		return (NULL);
+	white_spaces(read_line);
 	case_of_pipe_inside_quotes_1(read_line);
 	splited = ft_split(read_line, '|');
 	if (!splited)
@@ -111,6 +112,8 @@ t_input	*ft_parsing(char *read_line, t_list *env)
 		return (free_inputs(input), NULL);
 	if (!quotes_cases_2(input))
 		return (free_inputs(input), NULL);
-	skip_spaces_for_echo_args(input);
+	split_cmds_and_args(input, input, 0);
+	if (!quotes_cases_2(input))
+		return (free_inputs(input), NULL);
 	return (input);
 }

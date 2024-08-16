@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 18:39:16 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:35:56 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:41:10 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	open_failer(char *err_msg, char *file)
 {
-	if (!file[0])
+	if (!file || !file[0])
 	{
 		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
 		return ;
@@ -30,6 +30,8 @@ void	print_error(char *str)
 	int	i;
 
 	i = 0;
+	if (!str)
+		return ;
 	while (str[i])
 		write(2, &str[i++], 1);
 	write(2, "\n", 1);
@@ -44,7 +46,7 @@ int	is_dir(char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-void	case_of_error(t_options *tst_node, int *flag, int **pipes)
+void	cheack_validity(t_options *tst_node, int *flag)
 {
 	char	*err;
 	char	*file;
@@ -54,7 +56,7 @@ void	case_of_error(t_options *tst_node, int *flag, int **pipes)
 	if (tst_node->who == INPUT_RD)
 	{
 		file = tst_node->input;
-		fd = open(tst_node->input, O_RDONLY);
+		fd = open(file, O_RDONLY);
 	}
 	else
 		fd = open(tst_node->out, O_CREAT | O_RDWR, 0644);
@@ -64,7 +66,7 @@ void	case_of_error(t_options *tst_node, int *flag, int **pipes)
 		while (tst_node)
 		{
 			if (tst_node->who == HERE_DOC)
-				here_doc_sim(tst_node->limiter, pipes);
+				here_doc_sim(tst_node->limiter);
 			tst_node = tst_node->next;
 		}
 		open_failer(err, file);

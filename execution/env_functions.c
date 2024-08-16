@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 12:50:38 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:14:43 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:02:07 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ char	**prep_env(t_list *env)
 
 	size = ft_lstsize(env);
 	res = malloc(sizeof(char *) * (size + 1));
+	if (!res)
+		return (NULL);
 	res[size] = NULL;
 	index = 0;
 	while (env)

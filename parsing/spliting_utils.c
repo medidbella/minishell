@@ -1,42 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo_args_utils.c                                  :+:      :+:    :+:   */
+/*   spliting_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/08 14:34:53 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/08 15:37:23 by alaktari         ###   ########.fr       */
+/*   Created: 2024/08/12 04:26:34 by alaktari          #+#    #+#             */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	tabs_to_spaces(char *arg)
+void	tabs_to_spaces(char *arg, int i)
 {
-	int	i;
-
-	i = 0;
-	while (arg[i])
+	while (arg[++i])
 	{
-		if (arg[i] == '\t')
-			arg[i] = ' ';
-		i++;
+		if (arg[i] == '"')
+		{
+			i++;
+			while (arg[i] != '"' && arg[i])
+			{
+				if (arg[i] == '\t' || arg[i] == ' ')
+					arg[i] = SPACES;
+				i++;
+			}
+		}
+		else if (arg[i] == 39)
+		{
+			i++;
+			while (arg[i] != 39 && arg[i])
+			{
+				if (arg[i] == '\t' || arg[i] == ' ')
+					arg[i] = SPACES;
+				i++;
+			}
+		}
 	}
-}
-
-int	len_of_splited_arg(char **splited_arg)
-{
-	int	i;
-	int	len;
-
-	i = 0;
-	len = 0;
-	while (splited_arg[i])
-	{
-		len += ft_strlen(splited_arg[i]);
-		len++;
-		i++;
-	}
-	return (len);
 }

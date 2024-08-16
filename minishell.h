@@ -6,17 +6,17 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/09 16:22:40 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/12 20:14:03 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define RD_TRNC 1 // > 
-# define RD_APND 2 // >>
-# define HERE_DOC 3 // <<
-# define INPUT_RD 4 // <
+# define RD_TRNC 1  
+# define RD_APND 2 
+# define HERE_DOC 3 
+# define INPUT_RD 4 
 # define EXTERNAL 13
 # define BUILTIN 37
 
@@ -62,6 +62,7 @@ typedef struct s_holder
 typedef struct s_sig
 {
 	int				sig_kill_flag;
+	int				last_cmd_pid;
 	unsigned char	r_val;
 }	t_sig;
 

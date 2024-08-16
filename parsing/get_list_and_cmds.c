@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 11:02:39 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/08 23:03:52 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ int	get_the_cmd(t_input *input, char *splited, int len, int i)
 		return (free(s1), 0);
 	input->cmd_av = ft_split(s2, ' ');
 	if (!input->cmd_av)
-		return (free(s2), free(s1), 0);
-	if (!check_built_in(input))
 		return (free(s2), free(s1), 0);
 	return (free(s1), free(s2), 1);
 }
@@ -121,13 +119,15 @@ int	get_list_and_cmds(t_input *input, char *splited)
 {
 	int		i;
 	int		check;
+	int		find;
 
 	i = 0;
 	while (splited[i])
 	{
-		if (input_or_output_valide(splited, i) == 1)
+		find = input_or_output_valide(splited, i);
+		if (find == 1)
 			check = input_redirection_and_her_doc(input, splited, i);
-		else if (input_or_output_valide(splited, i) == 2)
+		else if (find == 2)
 			check = output_redirection_and_append(input, splited, i);
 		else
 		{

@@ -6,13 +6,13 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:41:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:29:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:52:49 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	opt_iter(t_options *opt, int *write_idx, int *read_idx, int **pipes)
+int	opt_iter(t_options *opt, int *write_idx, int *read_idx)
 {
 	int	err_flag;
 	int	index;
@@ -22,11 +22,9 @@ int	opt_iter(t_options *opt, int *write_idx, int *read_idx, int **pipes)
 	while (opt->next)
 	{
 		if (opt->who == HERE_DOC && index != *read_idx)
-		{
-			here_doc_sim(opt->limiter, pipes);
-		}
+			here_doc_sim(opt->limiter);
 		else if (index != *read_idx && index != *write_idx)
-			case_of_error(opt, &err_flag, pipes);
+			cheack_validity(opt, &err_flag);
 		if (err_flag)
 			return (1);
 		index++;
@@ -102,8 +100,20 @@ char	*find_path(char *find_me, t_list *env)
 
 void	pre_execve(t_holder *mem, int w_fd, int r_fd, char ***child_env)
 {
+	if (set_file_descriptors(mem, &w_fd, &r_fd) == 1)
+		exit(1);
+	signal(SIGINT, child_sigint);
+	signal(SIGQUIT, SIG_DFL);
 	close_unused_pipes(mem->pipes, w_fd, r_fd);
-	dup2(w_fd, 1);
-	dup2(r_fd, 0);
+	if (w_fd >= 0)
+	{
+		dup2(w_fd, 1);
+		close(w_fd);
+	}
+	if (r_fd >= 0)
+	{
+		dup2(r_fd, 0);
+		close(r_fd);
+	}
 	*child_env = prep_env(mem->env);
 }

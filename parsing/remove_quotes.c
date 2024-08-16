@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 02:42:03 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/08 15:48:33 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	there_are_quotes(char *splited)
 	i = 0;
 	while (splited[i])
 	{
-		if (splited[i] == REMOVE || splited[i] == REMOVE)
+		if (splited[i] == REMOVE)
 			return (1);
 		i++;
 	}
@@ -62,7 +62,7 @@ char	*start_removing(char *splited)
 		i = -1;
 		while (splited[++i])
 		{
-			if (splited[i] != REMOVE && splited[i] != REMOVE)
+			if (splited[i] != REMOVE)
 				new_splited[x++] = splited[i];
 		}
 		new_splited[x] = 0;
@@ -84,6 +84,8 @@ static int	remove_quotes_for_list(t_options *list)
 			p_to = &(list->out);
 		else if (list->limiter)
 			p_to = &(list->limiter);
+		else
+			return (1);
 		new_str = start_removing(*p_to);
 		if (!new_str)
 			return (0);
@@ -93,7 +95,7 @@ static int	remove_quotes_for_list(t_options *list)
 	return (1);
 }
 
-int	remove_quotes(t_input *input)
+int	remove_quotes(t_input *input, t_input *head)
 {
 	int		i;
 	char	*new_str;
@@ -102,7 +104,7 @@ int	remove_quotes(t_input *input)
 	{
 		if (input->cmd_av)
 		{
-			i = 1;
+			i = 0;
 			while (input->cmd_av[i])
 			{
 				new_str = start_removing(input->cmd_av[i]);
@@ -116,5 +118,5 @@ int	remove_quotes(t_input *input)
 			return (0);
 		input = input->next;
 	}
-	return (0);
+	return (check_built_in(head));
 }

@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 15:29:08 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/09 16:21:31 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,5 +140,5 @@ int	expansion(t_input *input, t_list *env, int i)
 			return (0);
 		input = input->next;
 	}
-	return (check_if_var_is_not_exist(head, 0, 0));
+	return (check_if_var_is_not_exist(head, head, 0, 0));
 }

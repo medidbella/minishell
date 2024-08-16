@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/09 16:36:48 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:45:23 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,16 +74,22 @@ void		ft_cpy(char *splited, int *i, char *str, int *x);
 void		free_expnd(t_expnd *expnd);
 int			quotes_cases_1(char **splited);
 int			quotes_cases_2(t_input *input);
-int			remove_quotes(t_input *input);
+int			remove_quotes(t_input *input, t_input *head);
 char		*start_removing(char *splited);
 void		case_of_dollar_sign(char *splited);
 void		case_of_exit_statu(char *splited);
-int			check_if_var_is_not_exist(t_input *input, int i, int x);
+int			check_if_var_is_not_exist(t_input *input, t_input *head,
+				int i, int x);
 char		*get_return_value(char *curr_str);
 int			split_echo_arguments(t_input *input);
-int			skip_spaces_for_echo_args(t_input *input);
+int			split_cmds_and_args(t_input *input, t_input *head, int i);
 char		*get_splited_arg(char *arg);
-void		tabs_to_spaces(char *arg);
+void		tabs_to_spaces(char *arg, int i);
 int			len_of_splited_arg(char **splited_arg);
+void		swap_args(t_input *input);
+void		check_list(t_options *list);
+void		free_empty_strs(t_input *input);
+void		return_to_spaces(char **splited);
+void		white_spaces(char *read_line);
 
 #endif

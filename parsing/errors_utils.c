@@ -3,18 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   errors_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 03:26:38 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/11 18:47:04 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+extern t_sig	*g_status;
+
 int	print_errors(void)
 {
 	ft_putstr_fd("syntax error\n", 2);
+	g_status->r_val = 2;
 	return (0);
 }
 

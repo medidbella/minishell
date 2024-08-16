@@ -6,38 +6,36 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 22:55:24 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/08 15:37:36 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	check_built_in(t_input	*input)
+void	white_spaces(char *read_line)
 {
-	int		len;
-	char	*cmd;
-	char	*new_cmd;
+	int	i;
 
-	new_cmd = start_removing(input->cmd_av[0]);
-	if (!new_cmd)
-		return (0);
-	input->cmd_av[0] = new_cmd;
-	if (input->cmd_av && input->cmd_av[0])
+	i = 0;
+	while (read_line[i])
 	{
-		cmd = input->cmd_av[0];
-		len = ft_strlen(cmd);
-		if (((!ft_strncmp(cmd, "echo", len) && len == 4)) || ((!ft_strncmp(cmd,
-						"pwd", len)) && len == 3) || ((!ft_strncmp(cmd,
-						"export", len)) && len == 6)
-			|| ((!ft_strncmp(cmd, "unset", len)) && len == 5)
-			|| ((!ft_strncmp(cmd, "exit", len)) && len == 4)
-			|| ((!ft_strncmp(cmd, "env", len)) && len == 3)
-			|| ((!ft_strncmp(cmd, "cd", len)) && len == 2))
-			input->type = BUILTIN;
-		else
-			input->type = EXTERNAL;
+		if (read_line[i] == '"')
+		{
+			i++;
+			while (read_line[i] != '"')
+				i++;
+		}
+		else if (read_line[i] == 39)
+		{
+			i++;
+			while (read_line[i] != 39)
+				i++;
+		}
+		else if ((read_line[i] >= 9 && read_line[i] <= 13)
+			|| read_line[i] == 32)
+			read_line[i] = ' ';
+		i++;
 	}
-	return (1);
 }
 
 int	input_or_output_valide(char *splited, int i)
@@ -108,16 +106,13 @@ int	get_file_name_or_limiter(char *str, t_options *new_list, int who)
 	int	len;
 	int	x;
 
+	x = 0;
 	new_list->next = NULL;
 	len = ft_strlen(str) + 1;
-	if (who == INPUT_RD)
-		x = input_redirection_or_her_doc(new_list, str, len, INPUT_RD);
-	else if (who == HERE_DOC)
-		x = input_redirection_or_her_doc(new_list, str, len, HERE_DOC);
-	else if (who == RD_TRNC)
-		x = output_and_append_redirection(new_list, str, len, RD_TRNC);
-	else
-		x = output_and_append_redirection(new_list, str, len, RD_APND);
+	if (who == INPUT_RD || who == HERE_DOC)
+		x = input_redirection_or_her_doc(new_list, str, len, who);
+	else if (who == RD_TRNC || who == RD_APND)
+		x = output_and_append_redirection(new_list, str, len, who);
 	if (!x)
 		return (0);
 	return (1);

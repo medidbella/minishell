@@ -6,11 +6,13 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:34:28 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:37:47 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern t_sig	*g_status;
 
 int	env_helper(t_list *env, int write_fd)
 {
@@ -38,22 +40,22 @@ int	ft_env(t_holder *mem, int write_fd)
 	int	r_val;
 
 	if (!mem->pipes)
-		return (env_helper(mem->env, write_fd), 0);
+		return (g_status->r_val = env_helper(mem->env, write_fd), 0);
 	id = fork();
 	if (id == -1)
 		return (1);
+	if (!mem->input->next)
+		g_status->last_cmd_pid = id;
 	if (id == 0)
 	{
 		if (write_fd == -1)
 			write_fd = 1;
-		close_unused_pipes(mem->pipes, write_fd, -1);
 		r_val = env_helper(mem->env, write_fd);
 		close(write_fd);
 		exit(r_val);
 	}
-	wait(&r_val);
 	close(write_fd);
-	return (r_val);
+	return (0);
 }
 
 int	exit_helper(char **av, int *flag, int *r_val, t_holder *mem)
@@ -82,7 +84,7 @@ int	exit_helper(char **av, int *flag, int *r_val, t_holder *mem)
 	}
 	if (av[1])
 		return (*r_val = ft_atoi(av[1]));
-	return (*r_val = 0);
+	return (*r_val = g_status->r_val);
 }
 
 int	ft_exit(t_holder *mem)
@@ -96,7 +98,7 @@ int	ft_exit(t_holder *mem)
 		flag = 1;
 	exit_helper(mem->input->cmd_av, &flag, &exit_val, mem);
 	if (flag <= 0)
-		return (exit_val);
+		return (g_status->r_val = exit_val, 0);
 	if (flag != -1)
 	{
 		ft_putstr_fd("exit\n", 2);
@@ -104,5 +106,5 @@ int	ft_exit(t_holder *mem)
 		lstfree(mem->env);
 		exit(exit_val);
 	}
-	return (exit_val);
+	return (g_status->r_val = exit_val, 0);
 }

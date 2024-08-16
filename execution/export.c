@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:34:11 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/16 18:51:42 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,13 @@ void	new_environ(t_list *env, char *var, char *val)
 	while (val[i])
 		if (val[i++] == '"')
 			count++;
-	i = 0;
+	i = -1;
 	new_val = malloc(sizeof(char) * (ft_strlen(val) - count) + 1);
+	if (!new_val)
+		return ;
 	new_val[(ft_strlen(val) - count)] = 0;
-	while (val[i])
-	{
-		if (val[i] != '"')
-			new_val[i] = val[i];
-		i++;
-	}
+	while (val[++i])
+		new_val[i] = val[i];
 	ft_lstadd_back(&env, ft_lstnew(ft_strjoin(var, new_val)));
 	free(new_val);
 }
