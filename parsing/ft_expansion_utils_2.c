@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:42:59 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/18 13:58:46 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void	get_infos_2(t_expnd *expnd, char *str, char *search_var, int x)
 	expnd->var[j++] = '$';
 	while (str[x] && str[x] != ' ' && str[x] != S_QUOTES
 		&& str[x] != D_QUOTES && str[x] != DOLLAR
-		&& str[x] != SPACES && str[x] != '$' && str[x] != REMOVE)
+		&& str[x] != SPACES && str[x] != '$' && str[x] != REMOVE
+		&& limiter_chars(str[x]))
 	{
 		expnd->var[j++] = str[x];
 		search_var[y++] = str[x++];

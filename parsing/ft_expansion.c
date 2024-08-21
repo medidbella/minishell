@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 15:29:08 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/18 14:02:39 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	get_infos(char *str, int i, t_expnd *expnd, t_list *env)
 	{
 		while (str[++i] && str[i] != ' ' && str[i] != S_QUOTES && str[i]
 			!= D_QUOTES && str[i] != SPACES && str[i] != DOLLAR
-			&& str[i] != '$' && str[i] != REMOVE)
+			&& str[i] != '$' && str[i] != REMOVE && limiter_chars(str[i]))
 			expnd->var_len++;
 	}
 	search_var = malloc(sizeof(char) * (expnd->var_len + 2));
@@ -94,8 +94,8 @@ char	*ft_expansion(char *str, t_list *env, int i, t_expnd *expnd)
 
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1] && str[i + 1]
-			!= ' ')
+		there_are_specials(str, i);
+		if (str[i] == '$' && str[i + 1] && str[i + 1] != ' ')
 		{
 			new_expnd = ft_lst_new();
 			if (!new_expnd)

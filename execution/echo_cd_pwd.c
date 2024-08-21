@@ -6,13 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 17:07:05 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:52:06 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-extern t_sig	*g_status;
 
 void	echo_helper(char **av, int write_fd)
 {
@@ -59,10 +57,11 @@ int	ft_echo(t_holder *mem, int write_fd)
 		if (write_fd == -1)
 			write_fd = 1;
 		echo_helper(mem->input->cmd_av, write_fd);
-		close(write_fd);
+		child_mem_free(mem, NULL);
+		ft_close(write_fd);
 		exit(0);
 	}
-	close(write_fd);
+	ft_close(write_fd);
 	return (0);
 }
 
@@ -75,7 +74,7 @@ void	pwd_helper(int write_fd)
 	path = getcwd(NULL, PATH_MAX);
 	if (!path)
 	{
-		ft_putstr_fd("current working directory is removed\n", 2);
+		ft_putendl_fd(g_status->cur_pwd, write_fd);
 		return ;
 	}
 	ft_putstr_fd(path, write_fd);
@@ -99,10 +98,11 @@ int	ft_pwd(t_holder *mem, int write_fd)
 		if (write_fd == -1)
 			write_fd = 1;
 		pwd_helper(write_fd);
-		close(write_fd);
+		child_mem_free(mem, NULL);
+		ft_close(write_fd);
 		exit(0);
 	}
-	close(write_fd);
+	ft_close(write_fd);
 	return (0);
 }
 
@@ -114,18 +114,20 @@ int	ft_cd(t_holder *mem, char *curr_dir)
 	{
 		id = fork();
 		if (id == -1)
-			return (1);
+			return (free(curr_dir), 1);
 		if (!mem->input->next)
 			g_status->last_cmd_pid = id;
 		if (id == 0)
-			cd_child_case(mem);
+			cd_child_case(mem, curr_dir);
+		free(curr_dir);
 		return (0);
 	}
 	if (mem->input->cmd_av[2])
 		return (print_error(ft_strdup("cd: too many arguments")),
-			g_status->r_val = 1, 1);
+			g_status->r_val = 1, free(curr_dir), 1);
 	if (chdir(mem->input->cmd_av[1]) != 0)
-		return (ft_putstr_fd("cd: ", 2), g_status->r_val = 1,
+		return (ft_putstr_fd("cd: ", 2), g_status->r_val = 1, free(curr_dir),
 			ft_putstr_fd(mem->input->cmd_av[1], 2), perror(" "), 1);
-	return (set_pwd(mem), set_old_pwd(mem, curr_dir), g_status->r_val = 0, 0);
+	return (set_pwd(mem), set_old_pwd(mem, curr_dir), free(curr_dir),
+		g_status->r_val = 0, 0);
 }

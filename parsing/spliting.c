@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 20:41:58 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/17 16:02:38 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,6 @@ int	check_built_in(t_input	*input)
 	return (1);
 }
 
-static int	get_cmd_av_size(char **cmd_av)
-{
-	int	size;
-
-	size = 0;
-	while (cmd_av[size])
-		size++;
-	return (size);
-}
-
 static int	new_cmd_av(char ***old, int index, int size, char **splited)
 {
 	int		i;
@@ -78,23 +68,61 @@ static int	new_cmd_av(char ***old, int index, int size, char **splited)
 	return (1);
 }
 
-int	no_remove(char *str)
+static int	remove_spaces(char **p_to)
 {
-	int	i;
+	char	*new_str;
+	int		len;
+	int		i;
+	int		x;
 
 	i = 0;
-	while (str[i])
+	x = 0;
+	len = get_the_new_len(*p_to) + 1;
+	new_str = malloc(sizeof(char) * len);
+	if (!new_str)
+		return (0);
+	while ((*p_to)[i])
 	{
-		if (str[i] == REMOVE)
-			return (0);
+		if ((*p_to)[i] != ' ')
+			new_str[x++] = (*p_to)[i];
 		i++;
+	}
+	new_str[x] = 0;
+	free(*p_to);
+	*p_to = new_str;
+	return (1);
+}
+
+static int	for_list(t_options *list)
+{
+	char	**p_to;
+
+	while (list)
+	{
+		p_to = &(list->input);
+		if (list->out)
+			p_to = &(list->out);
+		if (no_remove(*p_to))
+		{
+			white_spaces(*p_to);
+			if (more_than_a_word(*p_to))
+			{
+				free(*p_to);
+				*p_to = NULL;
+			}
+			else
+			{
+				if (!remove_spaces(p_to))
+					return (0);
+			}
+		}
+		list = list->next;
 	}
 	return (1);
 }
 
-int	split_cmds_and_args(t_input *input, t_input *head, int i)
+int	split_cmds_and_args(t_input *input, t_input *head, int i, int size)
 {
-	int		size;
 	char	**splited;
 
 	while (input)
@@ -104,18 +132,19 @@ int	split_cmds_and_args(t_input *input, t_input *head, int i)
 			i = -1;
 			while (input->cmd_av[++i])
 			{
-				if (no_remove(input->cmd_av[i]))
-				{
-					size = get_cmd_av_size(input->cmd_av);
-					tabs_to_spaces(input->cmd_av[i], -1);
-					splited = ft_split(input->cmd_av[i], ' ');
-					if (!splited)
-						return (0);
-					if (!new_cmd_av(&(input->cmd_av), i, size, splited))
-						return (0);
-				}
+				if (!no_remove(input->cmd_av[i]))
+					continue ;
+				size = get_cmd_av_size(input->cmd_av);
+				white_spaces(input->cmd_av[i]);
+				splited = ft_split(input->cmd_av[i], ' ');
+				if (!splited)
+					return (0);
+				if (!new_cmd_av(&(input->cmd_av), i, size, splited))
+					return (0);
 			}
 		}
+		if (!for_list(input->list))
+			return (0);
 		input = input->next;
 	}
 	return (remove_quotes(head, head));

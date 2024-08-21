@@ -6,13 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/15 22:37:47 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:41:32 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-extern t_sig	*g_status;
 
 int	env_helper(t_list *env, int write_fd)
 {
@@ -51,31 +49,24 @@ int	ft_env(t_holder *mem, int write_fd)
 		if (write_fd == -1)
 			write_fd = 1;
 		r_val = env_helper(mem->env, write_fd);
-		close(write_fd);
+		child_mem_free(mem, NULL);
+		ft_close(write_fd);
 		exit(r_val);
 	}
-	close(write_fd);
+	ft_close(write_fd);
 	return (0);
 }
 
 int	exit_helper(char **av, int *flag, int *r_val, t_holder *mem)
 {
-	int	i;
-
-	i = 0;
-	while (av[1] && av[1][i])
+	if (av[1] && !is_numeric(av[1]))
 	{
-		if ((!ft_isdigit(av[1][i]) && av[1][i] != '+' && av[1][i] != '-')
-				|| ((av[1][i] == '+' || av[1][i] == '-') && i != 0))
-		{
-			ft_putstr_fd("exit\nminishell: exit: numeric argument required\n",
-				2);
-			if (*flag)
-				return (free_inputs(mem->input), lstfree(mem->env), exit(2), 0);
-			else
-				return (*r_val = 2, 0);
-		}
-		i++;
+		ft_putstr_fd("exit\nminishell: exit: numeric argument required\n", 2);
+		if (*flag)
+			return (free_inputs(mem->input), lstfree(mem->env),
+				free(g_status->cur_pwd), exit(2), 0);
+		else
+			return (*r_val = 2, 0);
 	}
 	if (av[1] && av[2])
 	{
@@ -104,6 +95,7 @@ int	ft_exit(t_holder *mem)
 		ft_putstr_fd("exit\n", 2);
 		free_inputs(mem->input);
 		lstfree(mem->env);
+		free(g_status->cur_pwd);
 		exit(exit_val);
 	}
 	return (g_status->r_val = exit_val, 0);

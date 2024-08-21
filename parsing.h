@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:45:23 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 09:39:18 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,7 @@ void		case_of_exit_statu(char *splited);
 int			check_if_var_is_not_exist(t_input *input, t_input *head,
 				int i, int x);
 char		*get_return_value(char *curr_str);
-int			split_echo_arguments(t_input *input);
-int			split_cmds_and_args(t_input *input, t_input *head, int i);
+int			split_cmds_and_args(t_input *input, t_input *head, int i, int size);
 char		*get_splited_arg(char *arg);
 void		tabs_to_spaces(char *arg, int i);
 int			len_of_splited_arg(char **splited_arg);
@@ -91,5 +90,12 @@ void		check_list(t_options *list);
 void		free_empty_strs(t_input *input);
 void		return_to_spaces(char **splited);
 void		white_spaces(char *read_line);
+int			no_remove(char *str);
+int			get_cmd_av_size(char **cmd_av);
+int			more_than_a_word(char *str);
+int			get_the_new_len(char *str);
+int			ft_specials(char c, int who);
+void		there_are_specials(char *str, int i);
+int			limiter_chars(char c);
 
 #endif

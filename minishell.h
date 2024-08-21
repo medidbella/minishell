@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/12 20:14:03 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:04:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,20 @@ typedef struct s_input
 typedef struct s_holder
 {
 	t_input			*input;
+	t_input			*input_head;
 	t_list			*env;
 	int				**pipes;
 }	t_holder;
 
 typedef struct s_sig
 {
-	int				sig_kill_flag;
+	int				stp_flag;
 	int				last_cmd_pid;
 	unsigned char	r_val;
+	char			*cur_pwd;
+	char			*prog_name;
 }	t_sig;
+
+extern t_sig	*g_status;
 
 #endif

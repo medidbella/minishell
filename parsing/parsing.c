@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:50:07 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/20 16:40:18 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,7 @@ t_input	*ft_parsing(char *read_line, t_list *env)
 		return (free_inputs(input), NULL);
 	if (!quotes_cases_2(input))
 		return (free_inputs(input), NULL);
-	split_cmds_and_args(input, input, 0);
-	if (!quotes_cases_2(input))
+	if (!split_cmds_and_args(input, input, 0, 0))
 		return (free_inputs(input), NULL);
 	return (input);
 }

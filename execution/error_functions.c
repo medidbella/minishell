@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 18:39:16 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:41:10 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	open_failer(char *err_msg, char *file)
 {
-	if (!file || !file[0])
+	if (!file)
 	{
 		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
 		return ;
@@ -46,7 +46,7 @@ int	is_dir(char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-void	cheack_validity(t_options *tst_node, int *flag)
+void	check_validity(t_options *tst_node, int *flag, t_holder *mem)
 {
 	char	*err;
 	char	*file;
@@ -66,19 +66,22 @@ void	cheack_validity(t_options *tst_node, int *flag)
 		while (tst_node)
 		{
 			if (tst_node->who == HERE_DOC)
-				here_doc_sim(tst_node->limiter);
+				here_doc(mem, tst_node->limiter);
 			tst_node = tst_node->next;
 		}
 		open_failer(err, file);
 		*flag = 1;
 	}
-	close(fd);
+	ft_close(fd);
 }
 
 int	execve_failure(char *cmd, int *r_val)
 {
 	char	*err;
+	char	*tmp;
 
+	if (!cmd)
+		return (*r_val = 0, free(cmd), 0);
 	*r_val = 127;
 	if (locate_char(cmd, '/') && access(cmd, X_OK) != 0)
 	{
@@ -86,16 +89,17 @@ int	execve_failure(char *cmd, int *r_val)
 		if (errno == 13)
 			*r_val = 126;
 		ft_putstr_fd("minishell: ", 2);
+		tmp = cmd;
 		cmd = ft_strjoin(cmd, " ");
-		return (print_error(ft_strjoin(cmd, err)), free(cmd), 0);
+		return (print_error(ft_strjoin(cmd, err)), free(tmp), free(cmd), 0);
 	}
 	else if (locate_char(cmd, '/') && is_dir(cmd))
-		return (ft_putstr_fd("minishell: ", 2),
-			print_error(ft_strjoin(cmd, " Is a directory")), *r_val = 126, 0);
+		return (ft_putstr_fd("minishell: ", 2), *r_val = 126,
+			print_error(ft_strjoin(cmd, " Is a directory")), free(cmd), 0);
 	else if (locate_char(cmd, '/'))
-		return (ft_putstr_fd("minishell: ", 2),
-			print_error(ft_strjoin(cmd, " Is a regular file")), *r_val = 1, 0);
+		return (ft_putstr_fd("minishell: ", 2), *r_val = 1,
+			print_error(ft_strjoin(cmd, " Is a regular file")), free(cmd), 0);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
-	return (0);
+	return (free(cmd), 0);
 }

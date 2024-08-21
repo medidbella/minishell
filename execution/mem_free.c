@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:21:23 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 22:36:19 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:22:58 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	lstfree(t_list *list)
 void	child_mem_free(t_holder *mem, char **child_env)
 {
 	free(child_env);
-	free_inputs(mem->input);
+	free_inputs(mem->input_head);
 	lstfree(mem->env);
 	close_and_free_pipes(mem->pipes);
 }

@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   errors_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 03:26:38 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/21 09:47:57 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-extern t_sig	*g_status;
 
 int	print_errors(void)
 {
@@ -48,12 +46,14 @@ int	pipe_errors_2(char *read_line, int i, int x)
 	return (1);
 }
 
-static int	out_put_red_and_append(char *read_line, int *i)
+static int	out_put_and_append_red(char *read_line, int *i)
 {
 	int	checker;
 
 	(*i)++;
 	checker = 0;
+	if (read_line[*i] == ' ' || read_line[*i] == '>')
+		(*i)++;
 	while (read_line[*i] && read_line[*i] != '|')
 	{
 		if (read_line[*i] != ' ' && read_line[*i] != '>'
@@ -77,7 +77,7 @@ int	input_red_and_her_doc(char *read_line, int *i)
 
 	checker = 0;
 	(*i)++;
-	if (read_line[*i] == '>' || read_line[*i] == '<')
+	if (read_line[*i] == ' ' || read_line[*i] == '<')
 		(*i)++;
 	while (read_line[*i] && read_line[*i] != '|')
 	{
@@ -103,9 +103,9 @@ int	redirection_errors(char *read_line)
 	i = 0;
 	while (read_line[i])
 	{
-		if (read_line[i] == '>' && read_line[i + 1] != '>')
+		if (read_line[i] == '>')
 		{
-			if (!out_put_red_and_append(read_line, &i))
+			if (!out_put_and_append_red(read_line, &i))
 				return (0);
 		}
 		else if (read_line[i] == '<')

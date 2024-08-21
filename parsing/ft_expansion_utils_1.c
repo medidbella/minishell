@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 19:01:03 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/14 12:54:47 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/18 13:49:10 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	ft_infos(t_list *env, t_expnd *expnd, char *search_var)
 {
 	while (env)
 	{
-		if (!strncmp(env->content, search_var, expnd->var_len))
+		if (!ft_strncmp(env->content, search_var, expnd->var_len))
 		{
 			expnd->env = env;
 			expnd->value_len = ft_strlen(env->content) - expnd->var_len;

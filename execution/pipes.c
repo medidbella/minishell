@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:05:26 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:46:29 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void	close_unused_pipes(int **pipes, int w_fd, int r_fd)
 	while (pipes[i])
 	{
 		if (pipes[i][0] != r_fd && pipes[i][0] != w_fd)
-			close(pipes[i][0]);
+			ft_close(pipes[i][0]);
 		if (pipes[i][1] != w_fd && pipes[i][1] != r_fd)
-			close(pipes[i][1]);
+			ft_close(pipes[i][1]);
 		i++;
 	}
 }
@@ -77,8 +77,8 @@ void	close_and_free_pipes(int **fds)
 		return ;
 	while (fds[index])
 	{
-		close(fds[index][1]);
-		close(fds[index][0]);
+		ft_close(fds[index][1]);
+		ft_close(fds[index][0]);
 		free(fds[index]);
 		index++;
 	}

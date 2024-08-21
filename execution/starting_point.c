@@ -6,13 +6,11 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:39:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:47:54 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:04:11 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-extern t_sig	*g_status;
 
 int	get_input_output(t_options *iter, int *node_idx, int *her_doc)
 {
@@ -54,7 +52,7 @@ int	set_file_descriptors(t_holder *mem, int *pipe_wfd, int *pipe_rfd)
 	if (!mem->input->list)
 		return (0);
 	set_read_write(mem->input->list, &write_idx, &read_idx);
-	if (opt_iter(mem->input->list, &write_idx, &read_idx) == 1)
+	if (opt_iter(mem->input->list, &write_idx, &read_idx, mem) == 1)
 		return (1);
 	if (ft_sorter(mem->input->list, &write_idx, &read_idx, &her_doc_flag))
 		return (1);
@@ -72,13 +70,15 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 {
 	char	*bin_path;
 	char	**child_env;
-	int		return_val;
 	int		id;
 
-	if (!mem->input->cmd_av || mem->input->type == BUILTIN)
+	bin_path = NULL;
+	if (mem->input->type == BUILTIN)
 		return (exec_builtin(mem, w_fd, r_fd));
-	bin_path = find_path(mem->input->cmd_av[0], mem->env);
-	signal(SIGINT, SIG_IGN);
+	if (mem->input->cmd_av)
+		bin_path = find_path(mem->input->cmd_av[0], mem->env);
+	if (!ft_strncmp(g_status->prog_name, bin_path, ft_strlen(bin_path) + 1))
+		ignore_signals();
 	id = fork();
 	if (id == -1)
 		return (free(bin_path), 1);
@@ -86,15 +86,13 @@ int	executer(t_holder *mem, int w_fd, int r_fd)
 		g_status->last_cmd_pid = id;
 	if (id == 0)
 	{
-		pre_execve(mem, w_fd, r_fd, &child_env);
-		execve(bin_path, mem->input->cmd_av, child_env);
-		execve_failure(bin_path, &return_val);
-		child_mem_free(mem, child_env);
-		exit(return_val);
+		child_env = prep_exeve(mem, w_fd, r_fd, bin_path);
+		execve_failure(bin_path, &id);
+		exit(id);
 	}
 	if (is_here_doc(mem->input->list))
-		waitpid(id, NULL, 0);
-	return (close(w_fd), close(r_fd), free(bin_path), g_status->sig_kill_flag);
+		here_doc_wait(id);
+	return (ft_close(w_fd), ft_close(r_fd), free(bin_path), g_status->stp_flag);
 }
 
 void	exec_loop(t_holder *mem, int count)
@@ -103,23 +101,18 @@ void	exec_loop(t_holder *mem, int count)
 
 	pipe_index = 1;
 	if (count == 1)
-	{
-		mem->pipes = NULL;
-		executer(mem, -1, -1);
-		return ;
-	}
+		return (mem->pipes = NULL, executer(mem, -1, -1), free(NULL));
 	mem->pipes = pipes_creator(count);
 	if (!mem->pipes)
-	{
-		g_status->r_val = 1;
+		return (g_status->r_val = 1, free(NULL));
+	if (executer(mem, mem->pipes[0][1], -1))
 		return ;
-	}
-	executer(mem, mem->pipes[0][1], -1);
 	mem->input = mem->input->next;
 	while (mem->input->next)
 	{
-		executer(mem, mem->pipes[pipe_index][1],
-			mem->pipes[pipe_index - 1][0]);
+		if (executer(mem, mem->pipes[pipe_index][1],
+			mem->pipes[pipe_index - 1][0]))
+			return ;
 		mem->input = mem->input->next;
 		pipe_index++;
 	}
@@ -140,11 +133,15 @@ int	global_exec(t_holder *mem)
 	{
 		if (waitpid(g_status->last_cmd_pid, &r_val, 0) != -1
 			&& g_status->last_cmd_pid != 0)
-			g_status->r_val = WEXITSTATUS(r_val);
+		{
+			if (WIFSIGNALED(r_val))
+				g_status->r_val = 128 + WTERMSIG(r_val);
+			else
+				g_status->r_val = WEXITSTATUS(r_val);
+		}
 		if (wait(NULL) == -1)
 			break ;
 	}
 	g_status->last_cmd_pid = 0;
-	signal(SIGINT, sigint_handler);
 	return (close_and_free_pipes(mem->pipes), 0);
 }

@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:24:51 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/10 17:33:33 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/19 17:56:17 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,6 @@ void	set_old_pwd(t_holder *mem, char *old_pwd)
 	ft_export(mem, 1);
 	mem->input->cmd_av = temp;
 	free(tab[1]);
-	free(old_pwd);
 }
 
 void	set_pwd(t_holder *mem)
@@ -103,6 +102,8 @@ void	set_pwd(t_holder *mem)
 	char	**temp;
 
 	pwd = getcwd(NULL, PATH_MAX);
+	free(g_status->cur_pwd);
+	g_status->cur_pwd = ft_strdup(pwd);
 	tab[0] = "export";
 	tab[1] = ft_strjoin("PWD=", pwd);
 	tab[2] = NULL;
