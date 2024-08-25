@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 15:19:10 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/17 15:37:40 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:56:16 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,17 @@ static int	pipe_errors(char *read_line)
 	while (read_line[i] == ' ')
 		i++;
 	if (read_line[i] == '|')
-		return (print_errors());
+		return (print_errors(11));
 	while (read_line[i])
 	{
+		if (read_line[i] != ' ' && read_line[i] != '|')
+			checker = 1;
 		skip_pipes_inside_quotes(read_line, &i);
 		if (read_line[i] == '|')
 		{
-			if (!pipe_errors_2(read_line, i, i))
+			if (checker == 0)
+				return (print_errors(2));
+			if (!pipe_errors_2(read_line, i, i, 0))
 				return (0);
 		}
 		i++;
@@ -55,7 +59,7 @@ static int	pipe_errors(char *read_line)
 static int	single_quotes_errors(char *read_line, int *i, int checker)
 {
 	if (!checker)
-		return (print_errors());
+		return (print_errors(1));
 	if (read_line[*i] == 39)
 	{
 		checker = 0;
@@ -74,7 +78,7 @@ static int	single_quotes_errors(char *read_line, int *i, int checker)
 			(*i)++;
 		}
 		if (!checker)
-			return (print_errors());
+			return (print_errors(1));
 	}
 	return (1);
 }
@@ -110,10 +114,14 @@ static int	quotes_errors(char *read_line, int checker)
 
 int	ft_errors(char *read_line)
 {
-	if (read_line[0] == 0)
+	int	i;
+
+	i = 0;
+	if (read_line[i] == 0)
 		return (0);
 	if (!quotes_errors(read_line, 1))
 		return (0);
+	white_spaces(read_line);
 	if (!pipe_errors(read_line))
 		return (0);
 	if (!redirection_errors(read_line))

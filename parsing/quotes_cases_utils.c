@@ -6,13 +6,13 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 22:47:56 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/17 15:44:54 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:42:40 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void	replace_special_chars(char *p_to_char)
+void	replace_special_chars(char *p_to_char)
 {
 	if (*p_to_char == S_QUOTES)
 		*p_to_char = 39;
@@ -35,14 +35,16 @@ static int	for_list(t_options *list, int x)
 
 	while (list)
 	{
-		if (list->input)
-			str = &(list->input);
-		else if (list->out)
+		str = &(list->input);
+		if (list->out)
 			str = &(list->out);
-		else if (list->limiter)
-			str = &(list->limiter);
-		else
-			return (1);
+		else if (list->limiter || !(*str))
+		{
+			if (list->limiter)
+				no_expand(&(list->limiter));
+			list = list->next;
+			continue ;
+		}
 		x = -1;
 		while ((*str)[++x])
 			replace_special_chars(&((*str)[x]));

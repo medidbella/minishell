@@ -6,18 +6,20 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 13:41:32 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/23 16:51:56 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	env_helper(t_list *env, int write_fd)
+int	env_helper(t_input *input, t_list *env, int write_fd)
 {
 	int	i;
 
 	if (write_fd == -1)
 		write_fd = 1;
+	if (input->cmd_av[1])
+		return (ft_putstr_fd("minishell: env takes no arguments\n", 2), 1);
 	while (env)
 	{
 		if (locate_char(env->content, '='))
@@ -38,7 +40,8 @@ int	ft_env(t_holder *mem, int write_fd)
 	int	r_val;
 
 	if (!mem->pipes)
-		return (g_status->r_val = env_helper(mem->env, write_fd), 0);
+		return (g_status->r_val = env_helper(mem->input, mem->env,
+				write_fd), 0);
 	id = fork();
 	if (id == -1)
 		return (1);
@@ -48,7 +51,7 @@ int	ft_env(t_holder *mem, int write_fd)
 	{
 		if (write_fd == -1)
 			write_fd = 1;
-		r_val = env_helper(mem->env, write_fd);
+		r_val = env_helper(mem->input, mem->env, write_fd);
 		child_mem_free(mem, NULL);
 		ft_close(write_fd);
 		exit(r_val);
@@ -96,7 +99,36 @@ int	ft_exit(t_holder *mem)
 		free_inputs(mem->input);
 		lstfree(mem->env);
 		free(g_status->cur_pwd);
+		rl_clear_history();
 		exit(exit_val);
 	}
 	return (g_status->r_val = exit_val, 0);
+}
+
+int	is_big(char *str)
+{
+	int	i;
+	int	result;
+	int	sign;
+
+	i = 0;
+	result = 0;
+	sign = 1;
+	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
+		result *= 10;
+		result += str[i] - 48;
+		if (result >= 1000)
+			return (1);
+		i++;
+	}
+	return (0);
 }

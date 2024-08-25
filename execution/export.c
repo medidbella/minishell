@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/16 18:51:42 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 20:58:08 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	lexicographical_sort(t_list *head, int write_fd)
 			flag = 0;
 		}
 	}
-	printer(head, write_fd);
+	printer(head, write_fd, 0, 0);
 	lstfree(head);
 }
 

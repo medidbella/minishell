@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 19:21:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 12:37:17 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 18:24:06 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	is_numeric(char *str)
 	i = 0;
 	if (limiter_check(str))
 		return (0);
+	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
+		i++;
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]) && !(i == 0 && ft_isdigit(str[i + 1])

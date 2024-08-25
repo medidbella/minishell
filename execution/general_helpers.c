@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 14:50:54 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/11 19:40:41 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 16:03:48 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	is_optoin(char *arg)
 	int	i;
 
 	i = 1;
-	if (!arg || arg[0] != '-')
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
 		return (0);
 	while (arg[i])
 	{

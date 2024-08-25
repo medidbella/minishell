@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 18:39:16 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 15:18:15 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	is_dir(char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-void	check_validity(t_options *tst_node, int *flag, t_holder *mem)
+void	check_validity(t_options *tst_node, int *flag)
 {
 	char	*err;
 	char	*file;
@@ -63,12 +63,6 @@ void	check_validity(t_options *tst_node, int *flag, t_holder *mem)
 	if (fd < 0)
 	{
 		err = strerror(errno);
-		while (tst_node)
-		{
-			if (tst_node->who == HERE_DOC)
-				here_doc(mem, tst_node->limiter);
-			tst_node = tst_node->next;
-		}
 		open_failer(err, file);
 		*flag = 1;
 	}

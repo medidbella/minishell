@@ -6,19 +6,32 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:01:24 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 22:12:27 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	pre_unset(t_holder *mem)
+int	pre_unset(t_holder *mem, int write_fd)
 {
-	if (!mem->input->next)
+	char	*err_msg;
+
+	if (!mem->pipes)
 	{
-		g_status->last_cmd_pid = 0;
 		g_status->r_val = ft_unset(mem->input, &mem->env);
+		return (0);
 	}
+	err_msg = ("minishell: unset: no option is supported");
+	if (mem->input->cmd_av[1] && mem->input->cmd_av[1][0] == '-'
+			&& mem->input->cmd_av[1][1])
+	{
+		if (!mem->input->next)
+			g_status->r_val = 2;
+		return (print_error(ft_strdup(err_msg)), 2);
+	}
+	if (!mem->input->next)
+		g_status->r_val = 0;
+	ft_close(write_fd);
 	return (0);
 }
 
@@ -53,20 +66,13 @@ int	pre_cd(t_holder *mem, int write_fd)
 	{
 		new_dir = ft_get_env("HOME", mem->env);
 		if (!new_dir || !new_dir[0])
+		{
+			g_status->r_val = 1;
 			return (free(curr_dir), ft_putstr_fd("cd: HOME not set\n", 2), 1);
+		}
 		free_strings(mem->input->cmd_av);
 		return (tmp = ft_strjoin("cd ", new_dir), mem->input->cmd_av = ft_split
 			(tmp, ' '), free(tmp), ft_close(write_fd), ft_cd(mem, curr_dir));
-	}
-	else if (mem->input->cmd_av[1] && !ft_strncmp(mem->input->cmd_av[1],
-			"-", 2))
-	{
-		new_dir = ft_get_env("OLDPWD", mem->env);
-		if (!new_dir || !new_dir[0])
-			return (free(getcwd), ft_putstr_fd("cd: OLDPWD not set\n", 2), 1);
-		log_msg(new_dir, write_fd);
-		return (free(mem->input->cmd_av[1]), mem->input->cmd_av[1]
-			= ft_strdup(new_dir), ft_close(write_fd), ft_cd(mem, curr_dir));
 	}
 	return (ft_close(write_fd), ft_cd(mem, curr_dir));
 }
@@ -114,7 +120,7 @@ int	exec_builtin(t_holder *mem, int write_fd, int read_fd)
 	else if (!ft_strncmp("echo", mem->input->cmd_av[0], 6))
 		return (ft_echo(mem, write_fd));
 	else if (!ft_strncmp("unset", mem->input->cmd_av[0], 6))
-		return (pre_unset(mem));
+		return (pre_unset(mem, write_fd));
 	else if (!ft_strncmp("exit", mem->input->cmd_av[0], 6))
 		return (ft_exit(mem));
 	if (!ft_strncmp("export", mem->input->cmd_av[0], 6))

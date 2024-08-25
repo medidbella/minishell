@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 20:50:07 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/20 16:40:18 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/24 14:57:20 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ char	**split_read_line(char *read_line)
 	i = -1;
 	if (!ft_errors(read_line))
 		return (NULL);
-	white_spaces(read_line);
 	case_of_pipe_inside_quotes_1(read_line);
 	splited = ft_split(read_line, '|');
 	if (!splited)

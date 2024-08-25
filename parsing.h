@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 00:39:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 09:39:18 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:14:16 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_expnd
 t_input		*ft_parsing(char *read_line, t_list *env);
 int			ft_errors(char *read_line);
 int			redirection_errors(char *read_line);
-int			print_errors(void);
+int			print_errors(int which);
 void		free_inputs(t_input *input);
 void		free_splited(char **splited);
 void		free_env(t_list *env);
@@ -57,7 +57,7 @@ int			output_and_append_redirection(t_options *list, char *str,
 				int len, int who);
 int			get_file_name_or_limiter(char *str, t_options *new_list, int who);
 void		case_of_pipe_inside_quotes_1(char *read_line);
-int			pipe_errors_2(char *read_line, int i, int x);
+int			pipe_errors_2(char *read_line, int i, int x, int chaecker);
 void		case_of_pipe_inside_quotes_2(char **splited);
 int			check_built_in(t_input	*input);
 char		*ft_expansion(char *read_line, t_list *env, int i, t_expnd *expnd);
@@ -69,6 +69,8 @@ void		ft_infos(t_list *env, t_expnd *expnd, char *var);
 int			expansion(t_input *input, t_list *env, int i);
 void		get_infos_2(t_expnd *expnd, char *read_line, char *var, int x);
 int			expansion_for_list(t_options *list, t_list *env);
+void		no_expand(char **ptr);
+void		replace_special_chars(char *p_to_char);
 int			if_not_exists(t_expnd *expnd, char *new_str, int *x);
 void		ft_cpy(char *splited, int *i, char *str, int *x);
 void		free_expnd(t_expnd *expnd);
@@ -97,5 +99,10 @@ int			get_the_new_len(char *str);
 int			ft_specials(char c, int who);
 void		there_are_specials(char *str, int i);
 int			limiter_chars(char c);
+int			only_special_chars(char *str);
+int			special_and_normale_chars(char *s);
+int			remove_special_chars(char **str);
+void		replace_special_chars(char *p_to_char);
+int			do_expand(char *limiter);
 
 #endif

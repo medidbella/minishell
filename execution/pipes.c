@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:05:26 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 16:20:20 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,12 @@
 void	free_prev(int **tab, int index)
 {
 	while (index >= 0)
-		free(tab[index--]);
+	{
+		ft_close(tab[index][0]);
+		ft_close(tab[index][1]);
+		free(tab[index]);
+		index--;
+	}
 	free(tab);
 	return ;
 }

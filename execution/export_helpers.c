@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/15 12:37:22 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 22:45:23 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,29 @@ int	extra_case(char *str)
 			return (1);
 		i++;
 	}
+	if (str[i] == '+' && str[i + 1] != '=')
+		return (1);
 	return (0);
 }
 
-void	printer(t_list *head, int write_fd)
+int	is_specail_var(t_list **head)
 {
-	int	flag;
-	int	index;
+	if ((*head)->content[0] == '_' && (*head)->content[1] == '=')
+	{
+		(*head) = (*head)->next;
+		return (1);
+	}
+	return (0);
+}
 
+void	printer(t_list *head, int write_fd, int index, int flag)
+{
 	while (head)
 	{
 		flag = 0;
 		index = 0;
+		if (is_specail_var(&head))
+			continue;
 		ft_putstr_fd("declare -x ", write_fd);
 		while (head->content[index])
 		{
@@ -63,8 +74,7 @@ void	error_detector(char *av, int *return_val)
 	i = 0;
 	while (av[i] && av[i] != '+')
 		i++;
-	if ((!ft_isalpha(av[0]) && av[0] != '_') || (av[i] == '+'
-			&& av[i + 1] != '=') || extra_case(av))
+	if ((!ft_isalpha(av[0]) && av[0] != '_') || extra_case(av))
 	{
 		tmp = ft_strjoin("minishell: export:`", av);
 		print_error(ft_strjoin(tmp, "': not a valid identifier"));

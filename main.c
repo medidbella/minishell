@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 21:27:15 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 14:04:11 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:44:38 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	init_struct(t_holder *block, char **envp, t_sig *info, char **av)
 	g_status = info;
 	info->r_val = 0;
 	info->cur_pwd = NULL;
+	block->cmd = NULL;
 	block->env = envron_dup(envp);
 	set_shell_lvl(block->env);
 }
@@ -43,9 +44,8 @@ int	main(int ac, char **av, char **envp)
 		read_line = readline("MINISHELL : ");
 		if (!read_line)
 			return (free(g_status->cur_pwd), lstfree(block.env),
-				write(2, "exit\n", 5), g_status->r_val);
+				write(2, "exit\n", 5), rl_clear_history(), g_status->r_val);
 		add_history(read_line);
-		g_status->stp_flag = 0;
 		block.input = ft_parsing(read_line, block.env);
 		block.input_head = block.input;
 		free(read_line);

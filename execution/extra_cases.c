@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 15:24:51 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/19 17:56:17 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/22 15:08:57 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,11 @@ int	get_val(char *str)
 			return (1);
 		i++;
 	}
+	if (is_big(str))
+		return (ft_putstr_fd("warning: shell level too high, resetting to 1\n",
+				2), 1);
 	res = ft_atoi(str) + 1;
-	if (res >= 1000)
-	{
-		ft_putstr_fd("warning: shell level too high, resetting to 1\n", 2);
-		return (1);
-	}
-	else if (res < 0)
+	if (res < 0)
 		return (0);
 	return (res);
 }

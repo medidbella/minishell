@@ -6,25 +6,25 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 13:41:39 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 12:35:50 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:13:38 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	opt_iter(t_options *opt, int *write_idx, int *read_idx, t_holder *mem)
+int	opt_iter(t_holder *mem, int *write_idx, int *read_idx)
 {
-	int	err_flag;
-	int	index;
+	int			err_flag;
+	int			index;
+	t_options	*opt;
 
 	index = 0;
+	opt = mem->input->list;
 	err_flag = 0;
 	while (opt->next)
 	{
-		if (opt->who == HERE_DOC && index != *read_idx)
-			here_doc(mem, opt->limiter);
-		else if (index != *read_idx && index != *write_idx)
-			check_validity(opt, &err_flag, mem);
+		if (index != *read_idx && index != *write_idx && opt->who != HERE_DOC)
+			check_validity(opt, &err_flag);
 		if (err_flag)
 			return (1);
 		index++;
@@ -42,7 +42,7 @@ void	set_read_write(t_options *list, int *last_w, int *last_r)
 	{
 		if (list->who == RD_APND || list->who == RD_TRNC)
 			*last_w = index;
-		else if (list->who == HERE_DOC || list->who == INPUT_RD)
+		else
 			*last_r = index;
 		list = list->next;
 		index++;
@@ -50,23 +50,22 @@ void	set_read_write(t_options *list, int *last_w, int *last_r)
 	return ;
 }
 
-int	ft_sorter(t_options *opt_list, int *write_idx, int *read_idx, int *here_doc)
+int	ft_sorter(t_holder *mem, int *write_idx, int *read_idx)
 {
+	t_options	*opt_list;
+	int			idx;
+
+	idx = -1;
+	opt_list = mem->input->list;
 	if (*write_idx < *read_idx)
 	{
-		if (get_input_output(opt_list, write_idx, here_doc) == 1)
+		if (get_input_output(opt_list, write_idx) == 1)
 			return (1);
-		if (get_input_output(opt_list, read_idx, here_doc) == 1)
-			return (1);
+		return (get_input_output(opt_list, read_idx) == 1);
 	}
-	else
-	{
-		if (get_input_output(opt_list, read_idx, here_doc) == 1)
-			return (1);
-		if (get_input_output(opt_list, write_idx, here_doc) == 1)
-			return (1);
-	}
-	return (0);
+	if (get_input_output(opt_list, read_idx) == 1)
+		return (1);
+	return (get_input_output(opt_list, write_idx));
 }
 
 char	*find_path(char *find_me, t_list *env)
@@ -95,10 +94,11 @@ char	*find_path(char *find_me, t_list *env)
 	return (free_strings(paths), free(find_me), res);
 }
 
-char	**prep_exeve(t_holder *mem, int w_fd, int r_fd, char *bin_path)
+void	prep_exeve(t_holder *mem, int w_fd, int r_fd, char *bin_path)
 {
 	char	**child_env;
 
+	mem->cmd = bin_path;
 	if (set_file_descriptors(mem, &w_fd, &r_fd) == 1)
 		exit(1);
 	close_unused_pipes(mem->pipes, w_fd, r_fd);
@@ -115,5 +115,4 @@ char	**prep_exeve(t_holder *mem, int w_fd, int r_fd, char *bin_path)
 	child_env = prep_env(mem->env);
 	execve(bin_path, mem->input->cmd_av, child_env);
 	child_mem_free(mem, child_env);
-	return (child_env);
 }

@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 13:42:59 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/18 13:58:46 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:44:53 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,23 @@ void	ft_cpy(char *splited, int *i, char *str, int *x)
 		splited[(*i)++] = ' ';
 	}
 	str[(*x)++] = 0;
+}
+
+void	no_expand(char **ptr)
+{
+	int	i;
+
+	i = 0;
+	while ((*ptr)[i])
+	{
+		if ((*ptr)[i] == EXIT_STATUS)
+		{
+			(*ptr)[i++] = '$';
+			(*ptr)[i] = '?';
+		}
+		i++;
+	}
+	i = -1;
+	while ((*ptr)[++i])
+		replace_special_chars(&((*ptr)[i]));
 }

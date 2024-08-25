@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 22:55:24 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/17 15:37:40 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/24 13:24:12 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	input_redirection_or_her_doc(t_options *list, char *str, int len, int who)
 		if (!list->limiter)
 			return (0);
 		ft_strlcpy(list->limiter, str, len);
+		if (do_expand(list->limiter))
+			list->expand = 1;
 		list->who = HERE_DOC;
 		list->input = NULL;
 		list->out = NULL;

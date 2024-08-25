@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:36:16 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 14:04:11 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:51:56 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,11 @@
 void	child_sigquit_handler(int sig)
 {
 	sig *= 1;
-	printf("Quit (core dumped)\n");
+	ft_putstr_fd("Quit (core dumped)\n", 1);
 }
 
 void	child_sigint(int sig)
 {
-	g_status->stp_flag = 1;
 	sig *= 1;
 	write(1, "\n", 1);
 }
@@ -39,11 +38,15 @@ void	sigint_handler(int sig)
 void	here_doc_sigint(int sig)
 {
 	sig *= 1;
+	write(1, "\n", 1);
 	exit(1);
 }
 
-void	ignore_signals(void)
+void	ignore_signals(char *cmd)
 {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	if (!ft_strncmp(g_status->prog_name, cmd, ft_strlen(cmd) + 1))
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+	}
 }

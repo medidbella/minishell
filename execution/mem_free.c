@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 17:21:23 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/19 17:22:58 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 16:04:59 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ void	child_mem_free(t_holder *mem, char **child_env)
 	free(child_env);
 	free_inputs(mem->input_head);
 	lstfree(mem->env);
+	rl_clear_history();
 	close_and_free_pipes(mem->pipes);
 }
 
-void	init_vars(int *a, int *b, int *c, int *d)
+void	init_vars(int *a, int *b, int *c)
 {
 	*a = -1;
 	*b = -1;
 	*c = -1;
-	*d = -1;
 }

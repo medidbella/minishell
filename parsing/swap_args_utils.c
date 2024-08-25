@@ -6,7 +6,7 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 01:34:20 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/17 15:37:40 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:18:13 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ void	check_list(t_options *list)
 		p_to = &(list->input);
 	else if (list->out)
 		p_to = &(list->out);
-	else if (list->limiter)
-		p_to = &(list->limiter);
 	else
 		return ;
 	if (!(*p_to)[0])

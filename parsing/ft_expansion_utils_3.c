@@ -6,13 +6,13 @@
 /*   By: alaktari <alaktari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 02:35:10 by alaktari          #+#    #+#             */
-/*   Updated: 2024/08/17 15:37:40 by alaktari         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:44:02 by alaktari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	only_special_chars(char *str)
+int	only_special_chars(char *str)
 {
 	int	i;
 
@@ -26,7 +26,7 @@ static int	only_special_chars(char *str)
 	return (1);
 }
 
-static int	special_and_normale_chars(char *s)
+int	special_and_normale_chars(char *s)
 {
 	int	i;
 	int	checker_1;
@@ -48,7 +48,7 @@ static int	special_and_normale_chars(char *s)
 	return (0);
 }
 
-static int	remove_special_chars(char **str)
+int	remove_special_chars(char **str)
 {
 	char	*temp;
 	char	*new_str;
@@ -86,14 +86,12 @@ static int	check_for_list(t_options *list)
 			ptr = &(list->input);
 		else if (list->out)
 			ptr = &(list->out);
-		else if (list->limiter)
-			ptr = &(list->limiter);
-		if (only_special_chars(*ptr))
+		if (!(list->limiter) && only_special_chars(*ptr))
 		{
 			free(*ptr);
 			*ptr = NULL;
 		}
-		else if (special_and_normale_chars(*ptr))
+		else if (!(list->limiter) && special_and_normale_chars(*ptr))
 		{
 			if (!remove_special_chars(ptr))
 				return (0);

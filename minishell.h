@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:01:08 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/21 14:04:11 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/24 17:44:31 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_options
 	char				*input;
 	char				*out;
 	char				*limiter;
+	int					expand;
 	int					who;
 	struct s_options	*next;
 }	t_options;
@@ -47,6 +48,7 @@ typedef struct s_options
 typedef struct s_input
 {
 	char			**cmd_av;
+	int				here_doc_fd;
 	int				type;
 	t_options		*list;
 	struct s_input	*next;
@@ -57,12 +59,12 @@ typedef struct s_holder
 	t_input			*input;
 	t_input			*input_head;
 	t_list			*env;
+	char			*cmd;
 	int				**pipes;
 }	t_holder;
 
 typedef struct s_sig
 {
-	int				stp_flag;
 	int				last_cmd_pid;
 	unsigned char	r_val;
 	char			*cur_pwd;
