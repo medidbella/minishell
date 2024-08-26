@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 14:07:40 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/24 20:58:08 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/25 10:58:14 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	lexicographical_sort(t_list *head, int write_fd)
 {
 	int		flag;
-	int		iter;
 	t_list	*first;
 	t_list	*second;
 
@@ -25,7 +24,6 @@ void	lexicographical_sort(t_list *head, int write_fd)
 	while (1)
 	{
 		second = first->next;
-		iter = 0;
 		if (sort_helper(first->content, second->content))
 			swap_str(&first->content, &second->content, &flag);
 		first = first->next;

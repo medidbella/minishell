@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:38:45 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/23 16:51:56 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/25 11:08:38 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int	is_big(char *str)
 	{
 		result *= 10;
 		result += str[i] - 48;
-		if (result >= 1000)
+		if (result >= 999)
 			return (1);
 		i++;
 	}

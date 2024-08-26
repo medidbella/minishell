@@ -6,7 +6,7 @@
 /*   By: midbella <midbella@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/02 18:46:48 by midbella          #+#    #+#             */
-/*   Updated: 2024/08/24 22:45:23 by midbella         ###   ########.fr       */
+/*   Updated: 2024/08/25 10:40:34 by midbella         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	printer(t_list *head, int write_fd, int index, int flag)
 		flag = 0;
 		index = 0;
 		if (is_specail_var(&head))
-			continue;
+			continue ;
 		ft_putstr_fd("declare -x ", write_fd);
 		while (head->content[index])
 		{
